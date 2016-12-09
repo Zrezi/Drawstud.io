@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Drawstud.io - Login</title>
+		<meta charset="utf-8">
+
+		<!-- JQUERY -->
+		<script src="../js/plugins/JQuery-Min.js"></script>
+
+		<!-- MATERIALIZE CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+		<!-- MATERIALIZE JAVASCRIPT -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+
+		<style>
+			.login-page {
+				width: 360px;
+				padding: 8% 0 0;
+				margin: auto;
+			}
+			.login-form {
+				position: relative;
+				z-index: 1;
+				background: #FFFFFF;
+				max-width: 360px;
+				margin: 0 auto 100px;
+				padding: 45px;
+				text-align: center;
+				outline: 8px white dashed;
+			}
+			.login-form > p {
+				text-align: center;
+				color: #bdbdbd;
+			}
+		</style>
+
+		<script>
+
+			$(document).ready(function() {
+
+				$('#loginButton')[0].addEventListener('click', function(e) {
+					e.preventDefault();
+					
+					var username = $('#username').val()
+					if (username != '') {
+						Materialize.toast(username, 2000);
+
+						// Set the sessionStorage item 'username'
+						sessionStorage.setItem('ds__username', username);
+
+						// go to dashboard
+						document.location.href = "DrawingRoom.html";
+
+					} else {
+						Materialize.toast('Enter a username!', 2000);
+					}
+
+				}, true);
+
+			});
+
+		</script>
+
+	</head>
+	<body class="teal accent-2">
+
+		<div class="login-page">
+			<div class="form z-depth-3">
+				<form class="login-form">
+					<div class="input-field">
+						<input placeholder="Username..." id="username" type="text" class="validate">
+						<label for="username">Username</label>
+					</div>
+					<div class="input-field">
+						<input placeholder="Password..." id="password" type="text" class="validate">
+						<label for="password">Password</label>
+					</div>
+					<button class="btn" id="loginButton">login</button>
+					<p>Not registered? <a href="NewAccount.html" id="newAccount">Create an account</a></p>
+				</form>
+			</div>
+		</div>
+
+	</body>
+</html>

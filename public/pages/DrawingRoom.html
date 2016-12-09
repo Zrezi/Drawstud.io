@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Drawstud.io</title>
+		<meta charset="utf-8">
+
+		<!-- JQUERY -->
+		<script src="../js/plugins/JQuery-Min.js"></script>
+
+		<!-- MOUSEWHEEL EVENT PLUGIN -->
+		<script src="../js/plugins/MouseWheel.js"></script>
+
+		<!-- MATERIALIZE CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+		<!-- MATERIALIZE JAVASCRIPT -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+        
+        <!-- CUSTOM CSS -->  
+		<link rel="stylesheet" href="../style.css"/>
+
+		<!-- SOCKET IO -->
+		<script src="../socket.io/socket.io.js"></script>
+
+		<!-- CUSTOM JAVSCRIPT -->
+		<script src="../js/Display.js"></script>
+		<script src="../js/Input.js"></script>
+		<script src="../js/Main.js"></script>
+
+	</head>
+	<body>
+
+
+		<nav>
+			<div class="nav-wrapper z-depth-3 white">
+				<a href="#" class="brand-logo"></a>
+				<ul id="nav-mobile" class="right">
+					<li><a class="nav-item" href="">Sass</a></li>
+					<li><a class="nav-item" href="">Components</a></li>
+					<li><a class="nav-item" href="">JavaScript</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="container">
+
+
+        
+
+			<div class="spacer-med"></div>
+
+			<!-- CANVAS STUFF -->
+			<div class="z-depth-5" id="cursorParent">
+				<div class="col s1" style="text-align: center"></div>
+
+				<div class="col s10">
+					<canvas id="canvas"></canvas>
+					<canvas id="cursorCanvas"></canvas>
+				</div>
+
+				<div class="col s1" style="text-align: center"></div>
+			</div>
+
+			<div class="spacer-med"></div>
+
+			<div class="container">
+				<div class="row" style="text-align: center">
+					<div class="col s12">
+						<button class="btn z-depth-3 white" id="buttons" onclick="clearScreen();">Clear Screen</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+</html>

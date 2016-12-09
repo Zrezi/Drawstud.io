@@ -22,6 +22,8 @@ var lineColor = "black";
 
 $(document).ready(function() {
 
+    console.log('yeah, it started')
+
     // Connect to the socket and quit if it doesn't connect
 	socket  = io.connect();
 	if (!socket) {
@@ -161,7 +163,13 @@ function handleSocketEvents() {
     });
 
     socket.on('CLIENT REQUEST USERNAME', function(data){
-    	var name;
+        if (sessionStorage.getItem('ds__username')) {
+            socket.emit('SERVER SET USERNAME', sessionStorage.getItem('ds__username'));
+            return;
+        }
+
+        var name;
+
     	if (data) {
     		name = prompt('Try again!')
     	} else {

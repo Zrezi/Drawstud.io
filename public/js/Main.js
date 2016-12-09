@@ -150,6 +150,10 @@ function getUserReference() {
 
 function handleSocketEvents() {
 
+    socket.on('CLIENT INITIAL CONNECT', function() {
+        socket.emit('SERVER INITIAL CONNECT', "draw");
+    });
+
     // On disconnect
     socket.on('CLIENT UPDATE USER DISCONNECTED', function(data) {
         for (var i in otherUsers) {

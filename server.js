@@ -1,7 +1,8 @@
 var express = require('express'), 
 app = express(),
 http = require('http'),
-socketIo = require('socket.io');
+socketIo = require('socket.io'),
+jsonfile = require('jsonfile');
 
 var server =  http.createServer(app);
 var io = socketIo.listen(server);
@@ -14,17 +15,73 @@ var users = [];
 
 var line_history = [];
 
+// Get the json database
+var file = 'public/jsonDB.json';
+jsonfile.spaces = 4
+var jsonDB = jsonfile.readFileSync(file);
+
+
+
 io.on('connection', function (socket) {
 
 	// Generate a unique ID
-	var ip = socket.request.connection.remoteAddress;
 	var uniqueID = Math.round((new Date).getTime() * Math.random());
 
-	console.log('New connection from: ' + ip);
+	socket.emit('CLIENT INITIAL CONNECT');
 
-	// Request a username from the client
-	socket.emit('CLIENT REQUEST USERNAME', false);
+	socket.on('SERVER INITIAL CONNECT', function(data) {
 
+		if (data == "draw") {
+			addDrawingSocketEventsToSocket(socket, uniqueID);
+			socket.emit('CLIENT REQUEST USERNAME', false);
+		}
+
+		if (data == "newAccount") {
+			addNewAccountSocketEventsToSocket(socket, uniqueID);
+
+		}
+
+		if (data == "login") {
+			addLoginSocketEventsToSocket(socket, uniqueID);
+		}
+
+		addJSONFileSocketEventsToSocket(socket, uniqueID);
+
+	});
+
+		
+	
+
+});
+
+/*function checkForExistingIP(ip) {
+	for (var i in users) {
+		if (users[i].ipAddress == ip) {
+			return true;
+		}
+	}
+	return false;
+}*/
+
+function checkForExistingUsername(name) {
+	for (var i in users) {
+		if (users[i].username == name) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function getUserFromSocket(socket) {
+	for (var i in users) {
+		if (users[i].username == socket.username) {
+			return users[i];
+		}
+	}
+	return false;
+}
+
+function addDrawingSocketEventsToSocket(socket, uniqueID) {
 	// Tell the server to update the socket's username
 	socket.on('SERVER SET USERNAME', function(data) {
 
@@ -38,7 +95,7 @@ io.on('connection', function (socket) {
 
 			// Create a new user object
 			var user = {};
-			user.ipAddress = ip;
+			/*user.ipAddress = ip;*/
 			user.uniqueID = uniqueID;
 			user.username = data;
 			user.position = {x: 0, y: 0};
@@ -56,14 +113,6 @@ io.on('connection', function (socket) {
 			socket.broadcast.emit('CLIENT UPDATE NEW USER', user);
 		}
 	});
-
-	/*ids.push(uniqueID);
-	for (var i in ids) {
-		var id = ids[i];
-		if (id != uniqueID) {
-			socket.emit('user connect', id);
-		}
-	}*/
 
 	socket.on('SERVER UPDATE MOVE CURSOR', function(data) {
 		socket.broadcast.emit('CLIENT UPDATE MOVE CURSOR', data);
@@ -99,32 +148,65 @@ io.on('connection', function (socket) {
 		io.emit('CLIENT UPDATE CLEAR CANVAS', data);
 		line_history = [];
 	});
-
-});
-
-function checkForExistingIP(ip) {
-	for (var i in users) {
-		if (users[i].ipAddress == ip) {
-			return true;
-		}
-	}
-	return false;
 }
 
-function checkForExistingUsername(name) {
-	for (var i in users) {
-		if (users[i].username == name) {
-			return true;
+function addNewAccountSocketEventsToSocket(socket, uniqueID) {
+	socket.on('SERVER REQUEST NEW ACCOUNT', function(data) {
+		var accounts = jsonDB.accounts;
+
+		for (var i in accounts) {
+			var account = accounts[i];
+			if (account.username == data.username) {
+				socket.emit('CLIENT NEW ACCOUNT FAILED', "Username is already taken!");
+				return;
+			}
 		}
-	}
-	return false;
+
+		// write new account to json database
+		jsonDB.accounts.push({username: data.username, password: data.password});
+		jsonfile.writeFile(file, jsonDB, function (err) {
+			/*if (err != null) console.error(err);*/
+		})
+
+		// tell the client that their account was created
+		socket.emit('CLIENT NEW ACCOUNT SUCCESS');
+	})
 }
 
-function getUserFromSocket(socket) {
-	for (var i in users) {
-		if (users[i].username == socket.username) {
-			return users[i];
+function addLoginSocketEventsToSocket(socket, uniqueID) {
+	socket.on('SERVER REQUEST LOGIN', function(data) {
+
+		var accounts = jsonDB.accounts;
+
+		for (var i in accounts) {
+			var account = accounts[i];
+			if (account.username == data.username) {
+				if (account.password == data.password) {
+					socket.emit('CLIENT LOGIN SUCCESS');
+				} else {
+					socket.emit('CLIENT LOGIN FAILED', "Wrong password!");
+				}
+				return;
+			}
 		}
-	}
-	return false;
+
+		socket.emit('CLIENT LOGIN FAILED', "That user cannot be found.");
+
+	});
+}
+
+function addJSONFileSocketEventsToSocket(socket, uniqueID) {
+	socket.on('SERVER UPDATE JSONDATABASE', function(data) {
+
+		if (data.type == "account") {
+
+		}
+
+		//jsonDB = jsonfile.readFileSync(file);
+
+	});
+
+	socket.on('SERVER REQUEST JSONDATABASE DATA', function(data) {
+
+	});
 }

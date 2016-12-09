@@ -13,6 +13,9 @@
 		<!-- MATERIALIZE JAVASCRIPT -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
+		<!-- SOCKET IO -->
+		<script src="../socket.io/socket.io.js"></script>
+
 		<style>
 			.login-page {
 				width: 360px;
@@ -37,26 +40,48 @@
 
 		<script>
 
+			var socket;
+
 			$(document).ready(function() {
+
+				// Connect to the socket and quit if it doesn't connect
+				socket  = io.connect();
+				if (!socket) {
+					console.log('IO DIDN\'T WORK')
+					return false;
+				}
 
 				$('#loginButton')[0].addEventListener('click', function(e) {
 					e.preventDefault();
 					
 					var username = $('#username').val()
-					if (username != '') {
-						Materialize.toast(username, 2000);
+					var password = $('#password').val();
 
-						// Set the sessionStorage item 'username'
-						sessionStorage.setItem('ds__username', username);
+					if (username != '' && password != '' && username != null &&  password != null) {
 
-						// go to dashboard
-						document.location.href = "DrawingRoom.html";
+						//socket.emit('SERVER UPDATE JSONDATABASE', {type: "account", username: username, password: password});
+
+						socket.emit('SERVER REQUEST LOGIN', {username: username, password: password});
 
 					} else {
-						Materialize.toast('Enter a username!', 2000);
+
+						Materialize.toast('Something\'s wrong!', 2000);
+
 					}
 
 				}, true);
+
+				socket.on('CLIENT INITIAL CONNECT' ,function() {
+					socket.emit('SERVER INITIAL CONNECT', "login");
+				});
+
+				socket.on('CLIENT LOGIN SUCCESS', function(data) {
+					Materialize.toast('Logged in!', 2500);
+				});
+
+				socket.on('CLIENT LOGIN FAILED', function(data) {
+					Materialize.toast(data, 2500);
+				});
 
 			});
 

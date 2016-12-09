@@ -13,6 +13,9 @@
 		<!-- MATERIALIZE JAVASCRIPT -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
+		<!-- SOCKET IO -->
+		<script src="../socket.io/socket.io.js"></script>
+
 		<style>
 			.login-page {
 				width: 360px;
@@ -37,19 +40,53 @@
 
 		<script>
 
+			var socket;
+
 			$(document).ready(function() {
 
-				$('#loginButton')[0].addEventListener('click', function(e) {
+				// Connect to the socket and quit if it doesn't connect
+				socket  = io.connect();
+				if (!socket) {
+					console.log('IO DIDN\'T WORK')
+					return false;
+				}
+
+				$('#createAccountButton')[0].addEventListener('click', function(e) {
 					e.preventDefault();
 					
 					var username = $('#username').val()
-					if (username != '') {
-						Materialize.toast(username, 2000);
+					var password = $('#password').val();
+
+					if (username != '' && password != '' && username != null &&  password != null) {
+
+						//Materialize.toast(username, 2000);
+						socket.emit('SERVER REQUEST NEW ACCOUNT', {username: username, password: password});
+
+
 					} else {
-						Materialize.toast('Enter a username!', 2000);
+
+						Materialize.toast('Enter a username and/or a password!', 2000);
+
 					}
 
 				}, true);
+
+				socket.on('CLIENT INITIAL CONNECT' ,function() {
+					socket.emit('SERVER INITIAL CONNECT', "newAccount");
+				});
+
+				socket.on('CLIENT NEW ACCOUNT SUCCESS', function(data) {
+					Materialize.toast('Your account has been created!', 1000, '', function() {
+						Materialize.toast('Returning to Login', 1000, '', function() {
+							document.location.href = "Login.html";
+						});
+					});
+				});
+
+				socket.on('CLIENT NEW ACCOUNT FAILED', function(data) {
+					Materialize.toast(data, 2500);
+				});
+
 			});
 
 		</script>
@@ -68,7 +105,7 @@
 						<input placeholder="Password..." id="password" type="text" class="validate">
 						<label for="password">Password</label>
 					</div>
-					<button class="btn" id="loginButton">create account</button>
+					<button class="btn" id="createAccountButton">create account</button>
 					<p><a href="Login.html">Go back</a></p>
 				</form>
 			</div>

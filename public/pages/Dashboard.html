@@ -19,8 +19,6 @@
 		<style>
 			.login-page {
 				width: 70vw;
-				min-width: 750px;
-				padding: 20px 0 0;
 				margin: auto;
 			}
 			.login-form {
@@ -28,7 +26,7 @@
 				z-index: 1;
 				background: #FFFFFF;
 				margin: 0 auto 50px;
-				padding: 45px;
+				padding: 10vh;
 				text-align: center;
 				outline: 8px white dashed;
 			}
@@ -39,6 +37,10 @@
 			.login-form > h1 {
 				text-align: center;
 				color: #4db6ac;
+			}
+			.btn {
+				margin-top: 10px;
+				margin-bottom: 10px;
 			}
 			#fade-wrapper {
 				display: none;
@@ -55,8 +57,8 @@
 				$('#fade-wrapper').fadeIn(500);
 
 				/*if (sessionStorage.getItem('dsio__username')) {*/
-					username = sessionStorage.getItem('dsio__username');
-					$('#username').text(username);
+				username = sessionStorage.getItem('dsio__username');
+				$('#username').text(username);
 				/*}*/
 
 				// Connect to the socket and quit if it doesn't connect
@@ -84,6 +86,13 @@
 
 				}, true);*/
 
+				$('#viewProfile')[0].addEventListener('click', function(e) {
+					e.preventDefault();
+
+
+
+				});
+
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
 					socket.emit('SERVER INITIAL CONNECT', "dashboard");
 				});
@@ -97,31 +106,34 @@
 
 		<div id="fade-wrapper">
 
+			<div style="height: 10vh;"></div>
+
 			<div class="login-page">
 				<div class="form z-depth-3">
 					<div class="login-form">
 					<!-- <form class="login-form">
-						<div class="input-field">
-							<input placeholder="Username..." id="username" type="text" class="validate">
-							<label for="username">Username</label>
-						</div>
-						<div class="input-field">
-							<input placeholder="Password..." id="password" type="text" class="validate">
-							<label for="password">Password</label>
-						</div>
-						<button class="btn" id="loginButton">login</button>
-						<p>Not registered? <a href="NewAccount.html" id="newAccount">Create an account</a></p>
-					</form> -->
+							<div class="input-field">
+								<input placeholder="Username..." id="username" type="text" class="validate">
+								<label for="username">Username</label>
+							</div>
+							<div class="input-field">
+								<input placeholder="Password..." id="password" type="text" class="validate">
+								<label for="password">Password</label>
+							</div>
+							<button class="btn" id="loginButton">login</button>
+							<p>Not registered? <a href="NewAccount.html" id="newAccount">Create an account</a></p>
+						</form> -->
 						<h1 id="username"></h1>
+						<div style="height: 2.5vh;"></div>
 						<div class="row">
-							<div class="col s4">
-								<button class="btn" id="viewRooms">View Rooms</button>
+							<div class="col l4 m12">
+								<button class="btn col s12" id="viewRooms">View Rooms</button>
 							</div>
-							<div class="col s4">
-								<button class="btn" id="createRoom">Create a Room</button>
+							<div class="col l4 m12">
+								<button class="btn col s12" id="createRoom">Create a Room</button>
 							</div>
-							<div class="col s4">
-								<button class="btn" id="viewProfile">View Profile</button>
+							<div class="col l4 m12">
+								<button class="btn col s12" id="viewProfile">View Profile</button>
 							</div>
 						</div>
 
@@ -129,6 +141,12 @@
 				</div>
 			</div>
 
+		</div>
+
+		<div id="modal" class="modal">
+			<div class="modal-content">
+				<h4 id="username"></h4>
+			</div>
 		</div>
 
 	</body>

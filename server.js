@@ -2,7 +2,8 @@ var express = require('express'),
 app = express(),
 http = require('http'),
 socketIo = require('socket.io'),
-jsonfile = require('jsonfile');
+jsonfile = require('jsonfile'),
+bcrypt = require('bcrypt-nodejs');
 
 var server =  http.createServer(app);
 var io = socketIo.listen(server);
@@ -166,14 +167,17 @@ function addNewAccountSocketEventsToSocket(socket, uniqueID) {
 			}
 		}
 
-		// write new account to json database
-		jsonDB.accounts.push({username: data.username, password: data.password});
-		jsonfile.writeFile(file, jsonDB, function (err) {
-			/*if (err != null) console.error(err);*/
-		})
-
-		// tell the client that their account was created
-		socket.emit('CLIENT NEW ACCOUNT SUCCESS');
+		bcrypt.hash(data.password, null, null, function(err, hash) {
+		    // Store hash in your password DB.
+		    // write new account to json database
+			jsonDB.accounts.push({username: data.username, password: hash});
+			jsonfile.writeFile(file, jsonDB, function (err) {
+				/*if (err != null) console.error(err);*/
+			});
+			// tell the client that their account was created
+			socket.emit('CLIENT NEW ACCOUNT SUCCESS');
+		});
+		
 	})
 }
 
@@ -184,13 +188,19 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 
 		for (var i in accounts) {
 			var account = accounts[i];
+
 			if (account.username == data.username) {
-				if (account.password == data.password) {
-					socket.emit('CLIENT LOGIN SUCCESS', data);
-				} else {
-					socket.emit('CLIENT LOGIN FAILED', "Wrong password!");
-				}
+
+				bcrypt.compare(data.password, account.password, function(err, res) {
+					if (res) {
+						socket.emit('CLIENT LOGIN SUCCESS', data);
+					} else {
+						socket.emit('CLIENT LOGIN FAILED', "Wrong password!");
+					}
+				});
+				
 				return;
+
 			}
 		}
 

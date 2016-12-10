@@ -38,18 +38,22 @@ io.on('connection', function (socket) {
 
 		if (data == "newAccount") {
 			addNewAccountSocketEventsToSocket(socket, uniqueID);
-
+			console.log('New connection : Create an Account');
 		}
 
 		if (data == "login") {
 			addLoginSocketEventsToSocket(socket, uniqueID);
+			console.log('New connection : Login');
+		}
+
+		if (data == "dashboard") {
+			addDashboardSocketEventsToSocket(socket, uniqueID);
+			console.log('New connection : Dashboard');
 		}
 
 		addJSONFileSocketEventsToSocket(socket, uniqueID);
 
 	});
-
-		
 	
 
 });
@@ -182,7 +186,7 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 			var account = accounts[i];
 			if (account.username == data.username) {
 				if (account.password == data.password) {
-					socket.emit('CLIENT LOGIN SUCCESS');
+					socket.emit('CLIENT LOGIN SUCCESS', data);
 				} else {
 					socket.emit('CLIENT LOGIN FAILED', "Wrong password!");
 				}
@@ -193,6 +197,10 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 		socket.emit('CLIENT LOGIN FAILED', "That user cannot be found.");
 
 	});
+}
+
+function addDashboardSocketEventsToSocket(socket, uniqueID) {
+
 }
 
 function addJSONFileSocketEventsToSocket(socket, uniqueID) {

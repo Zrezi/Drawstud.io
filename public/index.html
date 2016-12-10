@@ -9,10 +9,11 @@
 
 		<script>
 
+			// Just route to the login page or dashboard depending on logged in status
 			$(document).ready(function() {
 
-				if (sessionStorage.getItem('ds__username') != null) {
-					document.location.href = "/pages/DrawingRoom.html";
+				if (sessionStorage.getItem('dsio__username')) {
+					document.location.href = "Dashboard.html";
 				} else {
 					document.location.href = "/pages/Login.html";
 				}

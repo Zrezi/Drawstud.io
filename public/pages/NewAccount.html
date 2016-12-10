@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Drawstud.io - Login</title>
+		<title>Drawstud.io - New Account</title>
 		<meta charset="utf-8">
 
 		<!-- JQUERY -->
@@ -19,7 +19,7 @@
 		<style>
 			.login-page {
 				width: 360px;
-				padding: 8% 0 0;
+				padding: 5% 0 0;
 				margin: auto;
 			}
 			.login-form {
@@ -36,6 +36,9 @@
 				text-align: center;
 				color: #bdbdbd;
 			}
+			#fade-wrapper {
+				display: none;
+			}
 		</style>
 
 		<script>
@@ -43,6 +46,8 @@
 			var socket;
 
 			$(document).ready(function() {
+
+				$('#fade-wrapper').fadeIn(500);
 
 				// Connect to the socket and quit if it doesn't connect
 				socket  = io.connect();
@@ -56,16 +61,23 @@
 					
 					var username = $('#username').val()
 					var password = $('#password').val();
+					var passwordConfirm = $('#passwordConfirm').val();
 
 					if (username != '' && password != '' && username != null &&  password != null) {
 
+						if (password == passwordConfirm) {
+							socket.emit('SERVER REQUEST NEW ACCOUNT', {username: username, password: password});
+						} else {
+							Materialize.toast('Passwords do not match.', 2500);
+						}
+
 						//Materialize.toast(username, 2000);
-						socket.emit('SERVER REQUEST NEW ACCOUNT', {username: username, password: password});
+						
 
 
 					} else {
 
-						Materialize.toast('Enter a username and/or a password!', 2000);
+						Materialize.toast('Enter a username and/or a password!', 2500);
 
 					}
 
@@ -76,8 +88,8 @@
 				});
 
 				socket.on('CLIENT NEW ACCOUNT SUCCESS', function(data) {
-					Materialize.toast('Your account has been created!', 1000, '', function() {
-						Materialize.toast('Returning to Login', 1000, '', function() {
+					Materialize.toast('Your account has been created!', 1500, '', function() {
+						Materialize.toast('Returning to Login', 1500, '', function() {
 							document.location.href = "Login.html";
 						});
 					});
@@ -94,21 +106,29 @@
 	</head>
 	<body class="teal accent-2">
 
-		<div class="login-page">
-			<div class="form z-depth-3">
-				<form class="login-form">
-					<div class="input-field">
-						<input placeholder="Username..." id="username" type="text" class="validate">
-						<label for="username">Username</label>
-					</div>
-					<div class="input-field">
-						<input placeholder="Password..." id="password" type="text" class="validate">
-						<label for="password">Password</label>
-					</div>
-					<button class="btn" id="createAccountButton">create account</button>
-					<p><a href="Login.html">Go back</a></p>
-				</form>
+		<div id="fade-wrapper">
+
+			<div class="login-page">
+				<div class="form z-depth-3">
+					<form class="login-form">
+						<div class="input-field">
+							<input placeholder="Username" id="username" type="text" class="validate">
+							<label for="username">Username</label>
+						</div>
+						<div class="input-field">
+							<input placeholder="Password" id="password" type="password" class="validate">
+							<label for="password">Password</label>
+						</div>
+						<div class="input-field">
+							<input placeholder="Confirm Password" id="passwordConfirm" type="password" class="validate">
+							<label for="passwordConfirm">Password Confirmation</label>
+						</div>
+						<button class="btn" id="createAccountButton">create account</button>
+						<p><a href="Login.html">Go back</a></p>
+					</form>
+				</div>
 			</div>
+
 		</div>
 
 	</body>

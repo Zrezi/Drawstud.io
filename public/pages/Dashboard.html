@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Drawstud.io - Login</title>
+		<title>Drawstud.io - Dashboard</title>
 		<meta charset="utf-8">
 
 		<!-- JQUERY -->
@@ -18,16 +18,16 @@
 
 		<style>
 			.login-page {
-				width: 360px;
-				padding: 5% 0 0;
+				width: 70vw;
+				min-width: 750px;
+				padding: 20px 0 0;
 				margin: auto;
 			}
 			.login-form {
 				position: relative;
 				z-index: 1;
 				background: #FFFFFF;
-				max-width: 360px;
-				margin: 0 auto 100px;
+				margin: 0 auto 50px;
 				padding: 45px;
 				text-align: center;
 				outline: 8px white dashed;
@@ -35,6 +35,10 @@
 			.login-form > p {
 				text-align: center;
 				color: #bdbdbd;
+			}
+			.login-form > h1 {
+				text-align: center;
+				color: #4db6ac;
 			}
 			#fade-wrapper {
 				display: none;
@@ -44,12 +48,16 @@
 		<script>
 
 			var socket;
+			var username;
 
 			$(document).ready(function() {
 
 				$('#fade-wrapper').fadeIn(500);
 
-
+				/*if (sessionStorage.getItem('dsio__username')) {*/
+					username = sessionStorage.getItem('dsio__username');
+					$('#username').text(username);
+				/*}*/
 
 				// Connect to the socket and quit if it doesn't connect
 				socket  = io.connect();
@@ -58,7 +66,7 @@
 					return false;
 				}
 
-				$('#loginButton')[0].addEventListener('click', function(e) {
+				/*$('#loginButton')[0].addEventListener('click', function(e) {
 					e.preventDefault();
 					
 					var username = $('#username').val()
@@ -74,24 +82,10 @@
 
 					}
 
-				}, true);
+				}, true);*/
 
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
-					socket.emit('SERVER INITIAL CONNECT', "login");
-				});
-
-				socket.on('CLIENT LOGIN SUCCESS', function(data) {
-
-					// Set a session storage item for the username
-					sessionStorage.setItem('dsio__username', data.username);
-
-					document.location.href = "Dashboard.html";
-
-
-				});
-
-				socket.on('CLIENT LOGIN FAILED', function(data) {
-					Materialize.toast(data, 2500);
+					socket.emit('SERVER INITIAL CONNECT', "dashboard");
 				});
 
 			});
@@ -105,18 +99,33 @@
 
 			<div class="login-page">
 				<div class="form z-depth-3">
-					<form class="login-form">
+					<div class="login-form">
+					<!-- <form class="login-form">
 						<div class="input-field">
 							<input placeholder="Username..." id="username" type="text" class="validate">
 							<label for="username">Username</label>
 						</div>
 						<div class="input-field">
-							<input placeholder="Password..." id="password" type="password" class="validate">
+							<input placeholder="Password..." id="password" type="text" class="validate">
 							<label for="password">Password</label>
 						</div>
 						<button class="btn" id="loginButton">login</button>
 						<p>Not registered? <a href="NewAccount.html" id="newAccount">Create an account</a></p>
-					</form>
+					</form> -->
+						<h1 id="username"></h1>
+						<div class="row">
+							<div class="col s4">
+								<button class="btn" id="viewRooms">View Rooms</button>
+							</div>
+							<div class="col s4">
+								<button class="btn" id="createRoom">Create a Room</button>
+							</div>
+							<div class="col s4">
+								<button class="btn" id="viewProfile">View Profile</button>
+							</div>
+						</div>
+
+					</div>
 				</div>
 			</div>
 

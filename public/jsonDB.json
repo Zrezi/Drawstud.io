@@ -1,24 +1,12 @@
 {
     "accounts": [
         {
-            "username": "blah",
-            "password": "ween"
+            "username": "Chong",
+            "password": "Shing"
         },
         {
-            "username": "bla231h",
-            "password": "wee2222n"
-        },
-        {
-            "username": "Weener",
-            "password": "Weener"
-        },
-        {
-            "username": "Weener123",
-            "password": "Weener123"
-        },
-        {
-            "username": "Boober",
-            "password": "duh"
+            "username": "Zach",
+            "password": "rez"
         }
     ]
 }

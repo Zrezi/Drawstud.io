@@ -15,6 +15,8 @@ console.log("Server running on 127.0.0.1:5007");
 var users = [];
 var numberOfConnections = 0;
 
+var createdRooms = [];
+
 var line_history = [];
 
 // Get the json database
@@ -33,11 +35,14 @@ io.on('connection', function (socket) {
 
 	socket.emit('CLIENT INITIAL CONNECT');
 
+	// Null this variable
+	socket.room = null;
+
 	socket.on('SERVER INITIAL CONNECT', function(data) {
 
 		if (data == "draw") {
 			addDrawingSocketEventsToSocket(socket, uniqueID);
-			socket.emit('CLIENT REQUEST USERNAME', false);
+			//socket.emit('CLIENT REQUEST USERNAME', false);
 		}
 
 		if (data == "newAccount") {
@@ -65,15 +70,6 @@ io.on('connection', function (socket) {
 
 });
 
-/*function checkForExistingIP(ip) {
-	for (var i in users) {
-		if (users[i].ipAddress == ip) {
-			return true;
-		}
-	}
-	return false;
-}*/
-
 function checkForExistingUsername(name) {
 	for (var i in users) {
 		if (users[i].username == name) {
@@ -93,7 +89,7 @@ function getUserFromSocket(socket) {
 }
 
 function addDrawingSocketEventsToSocket(socket, uniqueID) {
-	// Tell the server to update the socket's username
+	/*// Tell the server to update the socket's username
 	socket.on('SERVER SET USERNAME', function(data) {
 
 		// If the username is already used
@@ -106,7 +102,6 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 
 			// Create a new user object
 			var user = {};
-			/*user.ipAddress = ip;*/
 			user.uniqueID = uniqueID;
 			user.username = data;
 			user.position = {x: 0, y: 0};
@@ -123,19 +118,24 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 			// Let other users connected to the server know of the client's existence
 			socket.broadcast.emit('CLIENT UPDATE NEW USER', user);
 		}
+	});*/
+
+	socket.on('SERVER SET CLIENT ROOM', function(data) {
+		socket.room = data;
+		socket.join(socket.room);
 	});
 
 	socket.on('SERVER UPDATE MOVE CURSOR', function(data) {
-		socket.broadcast.emit('CLIENT UPDATE MOVE CURSOR', data);
+		socket.broadcast.to(socket.room).emit('CLIENT UPDATE MOVE CURSOR', data);
 	});
 
 	socket.on('SERVER UPDATE DRAW LINE', function (data) {
-		line_history.push(data);
-		socket.broadcast.emit('CLIENT UPDATE DRAW LINE', data);
+		line_history[socket.room].push(data);
+		socket.broadcast.to(socket.room).emit('CLIENT UPDATE DRAW LINE', data);
 	});
 
 	socket.on('SERVER REQUEST REDRAW', function(data) {
-		for (var i in line_history) {
+		for (var i in line_history[socket.room]) {
 			socket.emit('CLIENT UPDATE DRAW LINE', line_history[i]);
 		}
 	});
@@ -151,15 +151,15 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 			var user = users[i];
 			if (user.username == disconnectedUser.username) {
 				users.splice(i, 1);
-				socket.broadcast.emit('CLIENT UPDATE USER DISCONNECTED', disconnectedUser);
+				socket.broadcast.to(socket.room).emit('CLIENT UPDATE USER DISCONNECTED', disconnectedUser);
 				break;
 			}
 		}
 	});
 
 	socket.on('SERVER UPDATE CLEAR CANVAS', function(data) {
-		io.emit('CLIENT UPDATE CLEAR CANVAS', data);
-		line_history = [];
+		io.sockets.in(socket.room).emit('CLIENT UPDATE CLEAR CANVAS', data);
+		line_history[socket.room] = [];
 	});
 }
 
@@ -220,11 +220,21 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 function addDashboardSocketEventsToSocket(socket, uniqueID) {
 
 	socket.on('SERVER REQUEST VIEW ROOMS', function(data) {
-		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', io.sockets.adapter.rooms);
+		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', {allRooms: io.sockets.adapter.rooms, createdRooms: createdRooms});
 	});
 
 	socket.on('SERVER REQUEST CREATE ROOM', function(data) {
+		var rooms = Object.keys(io.sockets.adapter.rooms);
+		for (var i in rooms) {
+			if (data == rooms[i]) {
+				socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
+				return;
+			}
+		}
 
+		createdRooms.push(data);
+		line_history[data] = [];
+		socket.emit('CLIENT UPDATE CREATE ROOM SUCCESSFUL', data);
 	});
 
 }

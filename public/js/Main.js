@@ -7,13 +7,8 @@ var socket;
 // Reference to the client's user state on the server
 var user = {};
 
-// Will enable all of the drawing and input features once the user has been verified on the server
-var isVerified = false;
-
 // An array of all of the other clients on the server
 var otherUsers = [];
-
-var notifications = [];
 
 // Used for drawing
 var coords = false;
@@ -22,10 +17,8 @@ var lineColor = "black";
 
 $(document).ready(function() {
 
-    console.log('yeah, it started')
-
     // Connect to the socket and quit if it doesn't connect
-	socket  = io.connect();
+	socket = io.connect();
 	if (!socket) {
 		console.log('IO DIDN\'T WORK')
 		return false;
@@ -132,26 +125,21 @@ function start() {
 
 }
 
-function isWithinBounds(x1, y1, x2, y2) {
-	var x = Input.mouse.x;
-	var y = Input.mouse.y;
-
-	if (x1 <= x && x <= x2 && y1 <= y && y <= y2) return true;
-	return false;
-}
-
 function clearScreen() {
     socket.emit('SERVER UPDATE CLEAR CANVAS', getUserReference());
 }
 
 function getUserReference() {
-    return user;
+    return sessionStorage.getItem('dsio__username');
 }
 
 function handleSocketEvents() {
 
     socket.on('CLIENT INITIAL CONNECT', function() {
         socket.emit('SERVER INITIAL CONNECT', "draw");
+        socket.emit('SERVER SET CLIENT ROOM', sessionStorage.getItem('dsio__room'));
+        socket.emit('SERVER REQUEST REDRAW');
+        start();
     });
 
     // On disconnect
@@ -166,7 +154,7 @@ function handleSocketEvents() {
         }
     });
 
-    socket.on('CLIENT REQUEST USERNAME', function(data){
+    /*socket.on('CLIENT REQUEST USERNAME', function(data){
         if (sessionStorage.getItem('ds__username')) {
             socket.emit('SERVER SET USERNAME', sessionStorage.getItem('ds__username'));
             return;
@@ -185,9 +173,9 @@ function handleSocketEvents() {
         } else {
             socket.emit('SERVER SET USERNAME', null);
         }
-    });
+    });*/
 
-    socket.on('CLIENT SET VERIFIED', function(data) {
+    /*socket.on('CLIENT SET VERIFIED', function(data) {
 
         user = data.you;
         otherUsers = data.them;
@@ -197,7 +185,7 @@ function handleSocketEvents() {
 
         // Start the program loop
         start();
-    });
+    });*/
 
     socket.on('CLIENT UPDATE NEW USER', function(data) {
         otherUsers.push(data);
@@ -241,8 +229,7 @@ function handleSocketEvents() {
 
     // Simply wipe the canvas
     socket.on('CLIENT UPDATE CLEAR CANVAS', function(data) {
-        console.log(data);
         Display.context.clearRect(0, 0, Display.canvas.width, Display.canvas.height);
-        Materialize.toast('Screen Cleared By ' + data.username, 2000);
+        Materialize.toast('Screen Cleared By ' + data, 2000);
     });
 }

@@ -7,6 +7,14 @@
         {
             "username": "reznicek",
             "password": "$2a$10$SvUwZQ6oVz4s0J5N8LcK0e0tNgMfV4ulzlAl37uAj/Uj7erJ7tZmq"
+        },
+        {
+            "username": "Zach",
+            "password": "$2a$10$Y8L2KgahljAUqIuihWLyneH2cCNr/rXT/mSoky0O4MaIikqdT/tNy"
+        },
+        {
+            "username": "R",
+            "password": "$2a$10$0QpZOyi8H7CzGKHbjSV1H.SzHPC7uNFZ/M6qV6rUbc5oFv42uzfxy"
         }
     ]
 }

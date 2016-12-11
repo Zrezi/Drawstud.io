@@ -111,23 +111,44 @@
 					$('#modal-viewRooms').modal('open');
 				});
 
+				$('#createRoomButton')[0].addEventListener('click', function(e) {
+					var text = $('#roomNameInput').val();
+					console.log(text);
+
+					if (text != '' && text != null)
+					socket.emit('SERVER REQUEST CREATE ROOM', text);
+				})
+
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
 					socket.emit('SERVER INITIAL CONNECT', "dashboard");
 				});
 
 				socket.on('CLIENT UPDATE VIEW ROOMS DATA', function(data) {
 
-					// Erase the first property of the rooms object, which will always be the default room (we don't care about this one)
-					delete data[Object.keys(data)[0]];
+					//var element = '<div contenteditable="true">this is a test</div>';
+					/*var element = '<table>';
 
-					// Create an array for testing
-					var arr = Object.keys(data)
-					for (var i in arr) {
-						console.log(arr[i]);
+					element += '<thead><tr><th data-field="name">Name</th><th data-field="Users">Users</th><th data-field="connect">Connect</th></tr></thead>';
+
+					element += '<tbody>'
+					for (var i in data.createdRooms) {
+
+						var a = data[Object.keys(data.allRooms)[i]];
+
+
+						element += '<tr><td>' + data.roomName
+
+
 					}
+					element += '</tbody>'
 
-					// Set rooms equal to the names of the rooms minus the default one
-					rooms = arr;
+					$('#roomInformation').append(element);*/
+
+				});
+
+				socket.on('CLIENT UPDATE CREATE ROOM SUCCESSFUL', function(data) {
+					sessionStorage.setItem('dsio__room', data);
+					document.location.href = "DrawingRoom.html";
 				});
 
 			});
@@ -205,11 +226,15 @@
 			<div class="modal-content">
 				<h4>Create a Room</h4>
 
-				
+				<div class="input-field">
+					<input placeholder="Room Name" id="roomNameInput" type="text" class="validate" autocomplete="off">
+					<label for="roomNameInput">Room Name</label>
+				</div>
 
 			</div>
 			<div class="modal-footer">
 				<a class="modal-action modal-close btn-flat">Return</a>
+				<a class="modal-action modal-close btn-flat" id="createRoomButton">Create Room</a>
 			</div>
 		</div>
 
@@ -217,7 +242,9 @@
 			<div class="modal-content">
 				<h4>View Rooms</h4>
 
-				<button class="btn">Click</button>
+				<div id="roomInformation">
+					
+				</div>
 
 			</div>
 			<div class="modal-footer">

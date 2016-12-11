@@ -13,6 +13,9 @@
 		<!-- MATERIALIZE JAVASCRIPT -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
+		<!-- LOAD MATERIAL ICONS -->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 		<!-- SOCKET IO -->
 		<script src="../socket.io/socket.io.js"></script>
 
@@ -45,12 +48,32 @@
 			#fade-wrapper {
 				display: none;
 			}
+			.modal-content > h4 {
+				text-align: center;
+				color: #4db6ac;
+				margin-bottom: 40px;
+			}
+			.collapsible-header {
+				color: #4db6ac;
+			}
+			.collapsible-body {
+
+			}
+			.footer {
+				text-align: center;
+				position: fixed;
+				color: #009688;
+				bottom: 0;
+				width: 100%;
+			}
 		</style>
 
 		<script>
 
 			var socket;
 			var username;
+
+			var rooms = {};
 
 			$(document).ready(function() {
 
@@ -68,33 +91,43 @@
 					return false;
 				}
 
-				/*$('#loginButton')[0].addEventListener('click', function(e) {
-					e.preventDefault();
-					
-					var username = $('#username').val()
-					var password = $('#password').val();
-
-					if (username != '' && password != '' && username != null &&  password != null) {
-
-						socket.emit('SERVER REQUEST LOGIN', {username: username, password: password});
-
-					} else {
-
-						Materialize.toast('Something\'s wrong!', 2000);
-
-					}
-
-				}, true);*/
+				$('.modal').modal();
 
 				$('#viewProfile')[0].addEventListener('click', function(e) {
 					e.preventDefault();
+					$('#modal-profile').modal('open');
+				});
 
+				$('#createRoom')[0].addEventListener('click', function(e) {
+					e.preventDefault();
+					$('#modal-createRoom').modal('open');
+				});
 
+				$('#viewRooms')[0].addEventListener('click', function(e) {
+					e.preventDefault();
 
+					socket.emit('SERVER REQUEST VIEW ROOMS');
+
+					$('#modal-viewRooms').modal('open');
 				});
 
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
 					socket.emit('SERVER INITIAL CONNECT', "dashboard");
+				});
+
+				socket.on('CLIENT UPDATE VIEW ROOMS DATA', function(data) {
+
+					// Erase the first property of the rooms object, which will always be the default room (we don't care about this one)
+					delete data[Object.keys(data)[0]];
+
+					// Create an array for testing
+					var arr = Object.keys(data)
+					for (var i in arr) {
+						console.log(arr[i]);
+					}
+
+					// Set rooms equal to the names of the rooms minus the default one
+					rooms = arr;
 				});
 
 			});
@@ -143,11 +176,59 @@
 
 		</div>
 
-		<div id="modal" class="modal">
+		<div id="modal-profile" class="modal">
 			<div class="modal-content">
-				<h4 id="username"></h4>
+				<h4>Profile</h4>
+
+				<ul class="collapsible" data-collapsible="accordion">
+					<li>
+						<div class="collapsible-header"><i class="material-icons">person</i>Social</div>
+						<div class="collapsible-body"><p>Coming soon...</p></div>
+					</li>
+					<li>
+						<div class="collapsible-header"><i class="material-icons">poll</i>Statistics</div>
+						<div class="collapsible-body"><p>Coming soon...</p></div>
+					</li>
+					<li>
+						<div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
+						<div class="collapsible-body"><p>Coming soon...</p></div>
+					</li>
+				</ul>
+
+			</div>
+			<div class="modal-footer">
+				<a class="modal-action modal-close btn-flat">Return</a>
 			</div>
 		</div>
+
+		<div id="modal-createRoom" class="modal">
+			<div class="modal-content">
+				<h4>Create a Room</h4>
+
+				
+
+			</div>
+			<div class="modal-footer">
+				<a class="modal-action modal-close btn-flat">Return</a>
+			</div>
+		</div>
+
+		<div id="modal-viewRooms" class="modal">
+			<div class="modal-content">
+				<h4>View Rooms</h4>
+
+				<button class="btn">Click</button>
+
+			</div>
+			<div class="modal-footer">
+				<a class="modal-action modal-close btn-flat">Return</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
+		</div>
+          
 
 	</body>
 </html>

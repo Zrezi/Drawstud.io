@@ -3,6 +3,10 @@
         {
             "username": "Yee",
             "password": "$2a$10$6sjlIXONNOsYZ1fa.WDP6O2x0MGP8Bo0YR.7d0e5r28toTSp6InAm"
+        },
+        {
+            "username": "reznicek",
+            "password": "$2a$10$SvUwZQ6oVz4s0J5N8LcK0e0tNgMfV4ulzlAl37uAj/Uj7erJ7tZmq"
         }
     ]
 }

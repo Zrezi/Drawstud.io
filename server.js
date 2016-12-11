@@ -13,6 +13,7 @@ app.use(express.static(__dirname + '/public'));
 console.log("Server running on 127.0.0.1:5007");
 
 var users = [];
+var numberOfConnections = 0;
 
 var line_history = [];
 
@@ -24,6 +25,8 @@ var jsonDB = jsonfile.readFileSync(file);
 
 
 io.on('connection', function (socket) {
+
+	numberOfConnections++;
 
 	// Generate a unique ID
 	var uniqueID = Math.round((new Date).getTime() * Math.random());
@@ -50,6 +53,9 @@ io.on('connection', function (socket) {
 		if (data == "dashboard") {
 			addDashboardSocketEventsToSocket(socket, uniqueID);
 			console.log('New connection : Dashboard');
+
+
+			socket.join('dashboard');
 		}
 
 		addJSONFileSocketEventsToSocket(socket, uniqueID);
@@ -136,6 +142,8 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 
 	socket.on('disconnect', function() {
 
+		numberOfConnections--;
+
 		var disconnectedUser = getUserFromSocket(socket);
 		console.log('User ' + disconnectedUser.username + ' has disconnected.');
 
@@ -210,6 +218,14 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 }
 
 function addDashboardSocketEventsToSocket(socket, uniqueID) {
+
+	socket.on('SERVER REQUEST VIEW ROOMS', function(data) {
+		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', io.sockets.adapter.rooms);
+	});
+
+	socket.on('SERVER REQUEST CREATE ROOM', function(data) {
+
+	});
 
 }
 

@@ -113,10 +113,13 @@
 
 				$('#createRoomButton')[0].addEventListener('click', function(e) {
 					var text = $('#roomNameInput').val();
-					console.log(text);
 
-					if (text != '' && text != null)
-					socket.emit('SERVER REQUEST CREATE ROOM', text);
+					if (!/[^a-z]/i.test(text) && text != '' && text != null) {
+						socket.emit('SERVER REQUEST CREATE ROOM', text);
+						$('#modal-createRoom').modal('close');
+					} else {
+						Materialize.toast('Only letters! No spaces or other characters, sorry!', 2500);
+					}
 				})
 
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
@@ -195,6 +198,10 @@
 				</div>
 			</div>
 
+			<div class="footer">
+				<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
+			</div>
+
 		</div>
 
 		<div id="modal-profile" class="modal">
@@ -234,7 +241,7 @@
 			</div>
 			<div class="modal-footer">
 				<a class="modal-action modal-close btn-flat">Return</a>
-				<a class="modal-action modal-close btn-flat" id="createRoomButton">Create Room</a>
+				<a class="modal-action btn-flat" id="createRoomButton">Create Room</a>
 			</div>
 		</div>
 
@@ -250,10 +257,6 @@
 			<div class="modal-footer">
 				<a class="modal-action modal-close btn-flat">Return</a>
 			</div>
-		</div>
-
-		<div class="footer">
-			<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
 		</div>
           
 

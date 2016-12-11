@@ -133,7 +133,7 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 
 	socket.on('SERVER REQUEST REDRAW', function(data) {
 		for (var i in line_history[socket.room]) {
-			socket.emit('CLIENT UPDATE DRAW LINE', line_history[i]);
+			socket.emit('CLIENT UPDATE DRAW LINE', line_history[socket.room][i]);
 		}
 	});
 
@@ -217,7 +217,7 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 function addDashboardSocketEventsToSocket(socket, uniqueID) {
 
 	socket.on('SERVER REQUEST VIEW ROOMS', function(data) {
-		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', {allRooms: io.sockets.adapter.rooms, createdRooms: createdRooms});
+		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', createdRooms);
 	});
 
 	socket.on('SERVER REQUEST CREATE ROOM', function(data) {

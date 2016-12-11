@@ -125,24 +125,24 @@
 
 				socket.on('CLIENT UPDATE VIEW ROOMS DATA', function(data) {
 
-					//var element = '<div contenteditable="true">this is a test</div>';
+					$('#roomInformation').html('');
 					var element = '<table>';
-
-					element += '<thead><tr><th data-field="name">Name</th><th data-field="Users">Users</th><th data-field="connect">Connect</th></tr></thead>';
-
+					element += '<thead><tr><th data-field="name">Name</th><th data-field="connect">Connect</th></tr></thead>';
 					element += '<tbody>'
-					for (var i in data.createdRooms) {
-
-						var a = data[Object.keys(data.allRooms)[i]];
-
-
-						element += '<tr><td>' + data.roomName
-
-
+					for (var i in data) {
+						element += '<tr><td>' + data[i] + '</td><td><button class="btn" id="room-' + data[i] + '">Connect</button></td></tr>'
 					}
-					element += '</tbody>'
-
+					element += '</tbody></table>'
 					$('#roomInformation').append(element);
+
+					// Add click listeners on all of them
+					for (var i in data) {
+						var name = '#room-' + data[i];
+						$(name)[0].addEventListener('click', function(e) {
+							sessionStorage.setItem('dsio__room', data[i]);
+							document.location.href = "DrawingRoom.html";
+						});
+					}
 
 				});
 

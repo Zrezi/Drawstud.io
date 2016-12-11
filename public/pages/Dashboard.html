@@ -19,6 +19,7 @@
 		<!-- SOCKET IO -->
 		<script src="../socket.io/socket.io.js"></script>
 
+		<!-- CSS -->
 		<style>
 			.login-page {
 				width: 70vw;
@@ -77,18 +78,16 @@
 		<script>
 
 			var socket;
-			var username;
 
 			var rooms = {};
 
 			$(document).ready(function() {
 
-				$('#fade-wrapper').fadeIn(500);
+				// Change the header to the username text
+				$('#username').text(sessionStorage.getItem('dsio__username'));
 
-				/*if (sessionStorage.getItem('dsio__username')) {*/
-				username = sessionStorage.getItem('dsio__username');
-				$('#username').text(username);
-				/*}*/
+				// Fade in the page
+				$('#fade-wrapper').fadeIn(500);
 
 				// Connect to the socket and quit if it doesn't connect
 				socket  = io.connect();
@@ -97,6 +96,7 @@
 					return false;
 				}
 
+				// Materialize javascript call to initialize modals
 				$('.modal').modal();
 
 				$('#viewProfile')[0].addEventListener('click', function(e) {
@@ -139,6 +139,7 @@
 
 				socket.on('CLIENT UPDATE VIEW ROOMS DATA', function(data) {
 
+					// Reset information table, recreate it dynamically from the server, and append it to the view room modal
 					$('#roomInformation').html('');
 					var element = '<table>';
 					element += '<thead><tr><th data-field="name">Name</th><th data-field="connect">Connect</th></tr></thead>';
@@ -160,8 +161,14 @@
 
 				});
 
+				// On room creation success
 				socket.on('CLIENT UPDATE CREATE ROOM SUCCESSFUL', function(data) {
+
+					// Set the session storage room
 					sessionStorage.setItem('dsio__room', data);
+
+					// Change the page to the drawing room
+					// DrawingRoom.html will take a look at the sessionStorage item stored above and go from there
 					document.location.href = "DrawingRoom.html";
 				});
 
@@ -172,25 +179,16 @@
 	</head>
 	<body class="teal accent-2">
 
+		<!-- FADE WRAPPING -->
 		<div id="fade-wrapper">
 
+			<!-- SPACER FOR THE TOP OF THE SCREEN -->
 			<div style="height: 10vh;"></div>
 
+			<!-- PAGE CONTENT -->
 			<div class="login-page">
 				<div class="form z-depth-3">
 					<div class="login-form">
-					<!-- <form class="login-form">
-							<div class="input-field">
-								<input placeholder="Username..." id="username" type="text" class="validate">
-								<label for="username">Username</label>
-							</div>
-							<div class="input-field">
-								<input placeholder="Password..." id="password" type="text" class="validate">
-								<label for="password">Password</label>
-							</div>
-							<button class="btn" id="loginButton">login</button>
-							<p>Not registered? <a href="NewAccount.html" id="newAccount">Create an account</a></p>
-						</form> -->
 						<h1 id="username"></h1>
 						<div style="height: 2.5vh;"></div>
 						<div class="row">
@@ -206,22 +204,49 @@
 						</div>
 						<div style="height: 2.5vh;"></div>
 						<button class="btn col s12" id="logout">Logout</button>
-
-
 					</div>
 				</div>
 			</div>
 
+			<!-- STANDARD FOOTER -->
 			<div class="footer">
 				<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
 			</div>
 
 		</div>
 
+		<!-- VIEW ROOMS MODAL -->
+		<div id="modal-viewRooms" class="modal">
+			<div class="modal-content">
+				<h4>View Rooms</h4>
+				<div id="roomInformation">
+					<!-- WILL BE REPLACED DYNAMICALLY WITH THE VIEWROOM BUTTON CALL -->
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="modal-action modal-close btn-flat">Return</a>
+			</div>
+		</div>
+
+		<!-- CREATE A ROOM MODAL -->
+		<div id="modal-createRoom" class="modal">
+			<div class="modal-content">
+				<h4>Create a Room</h4>
+				<div class="input-field">
+					<input placeholder="Room Name" id="roomNameInput" type="text" class="validate" autocomplete="off">
+					<label for="roomNameInput">Room Name</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="modal-action modal-close btn-flat">Return</a>
+				<a class="modal-action btn-flat" id="createRoomButton">Create Room</a>
+			</div>
+		</div>
+
+		<!-- PROFILE MODAL -->
 		<div id="modal-profile" class="modal">
 			<div class="modal-content">
 				<h4>Profile</h4>
-
 				<ul class="collapsible" data-collapsible="accordion">
 					<li>
 						<div class="collapsible-header"><i class="material-icons">person</i>Social</div>
@@ -236,43 +261,11 @@
 						<div class="collapsible-body"><p>Coming soon...</p></div>
 					</li>
 				</ul>
-
 			</div>
 			<div class="modal-footer">
 				<a class="modal-action modal-close btn-flat">Return</a>
 			</div>
 		</div>
-
-		<div id="modal-createRoom" class="modal">
-			<div class="modal-content">
-				<h4>Create a Room</h4>
-
-				<div class="input-field">
-					<input placeholder="Room Name" id="roomNameInput" type="text" class="validate" autocomplete="off">
-					<label for="roomNameInput">Room Name</label>
-				</div>
-
-			</div>
-			<div class="modal-footer">
-				<a class="modal-action modal-close btn-flat">Return</a>
-				<a class="modal-action btn-flat" id="createRoomButton">Create Room</a>
-			</div>
-		</div>
-
-		<div id="modal-viewRooms" class="modal">
-			<div class="modal-content">
-				<h4>View Rooms</h4>
-
-				<div id="roomInformation">
-					
-				</div>
-
-			</div>
-			<div class="modal-footer">
-				<a class="modal-action modal-close btn-flat">Return</a>
-			</div>
-		</div>
-          
 
 	</body>
 </html>

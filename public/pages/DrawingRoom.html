@@ -17,7 +17,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
         
         <!-- CUSTOM CSS -->  
-		<link rel="stylesheet" href="../style.css"/>
+		<!-- <link rel="stylesheet" href="../style.css"/> -->
 
 		<!-- SOCKET IO -->
 		<script src="../socket.io/socket.io.js"></script>
@@ -26,6 +26,55 @@
 		<script src="../js/Display.js"></script>
 		<script src="../js/Input.js"></script>
 		<script src="../js/Main.js"></script>
+
+		<!-- CSS -->
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			html, body {
+				height: 100%;
+				background-color: #64ffda;
+			}
+			canvas {
+				position: absolute;
+				outline: white 10px dashed;
+			}
+			.spacer-med {
+				height: 5vh;
+			}
+			.spacer-sm {
+				height: 2.5vh;
+			}
+			#cursorParent {
+				position: relative;
+				height: 60vh;
+				background-color: white;
+			}
+			.btn {
+				height: 10vh;
+			}
+			#buttons {
+				color: black;
+			}
+			#toast-container {
+			  top: 10%;
+			  right: 10%;
+			  bottom: auto !important;
+			  left: auto !important;
+			}
+			.nav-item {
+				color: black;
+			}
+			.footer {
+			text-align: center;
+			position: fixed;
+			color: #009688;
+			bottom: 0;
+			width: 100%;
+			}
+		</style>
 
 	</head>
 	<body>
@@ -60,6 +109,7 @@
 
 		</div>
 
+		<!-- STANDARD FOOTER -->
 		<div class="footer">
 			<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
 		</div>

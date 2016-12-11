@@ -16,6 +16,7 @@
 		<!-- SOCKET IO -->
 		<script src="../socket.io/socket.io.js"></script>
 
+		<!-- CSS -->
 		<style>
 			.login-page {
 				width: 360px;
@@ -56,10 +57,13 @@
 
 		<script>
 
+			// Socket io object
 			var socket;
 
+			// On page load
 			$(document).ready(function() {
 
+				// Fade in the page
 				$('#fade-wrapper').fadeIn(500);
 
 				// Connect to the socket and quit if it doesn't connect
@@ -70,37 +74,44 @@
 				}
 
 				$('#createAccountButton')[0].addEventListener('click', function(e) {
+
+					// Prevent default behavior (page change)
 					e.preventDefault();
 					
+					// Get reference to the input values
 					var username = $('#username').val()
 					var password = $('#password').val();
 					var passwordConfirm = $('#passwordConfirm').val();
 
-					if (username != '' && password != '' && username != null &&  password != null) {
+					// If there is information entered
+					if (username != '' && password != '' && username != null && password != null) {
 
+						// If the two password inputs are the same
 						if (password == passwordConfirm) {
+
+							// Request the new account
 							socket.emit('SERVER REQUEST NEW ACCOUNT', {username: username, password: password});
 						} else {
+
+							// Alert that the passwords don't match
 							Materialize.toast('Passwords do not match.', 2500);
 						}
-
-						//Materialize.toast(username, 2000);
-						
-
-
 					} else {
 
+						// Otherwise alert the client
 						Materialize.toast('Enter a username and/or a password!', 2500);
-
 					}
-
 				}, true);
 
+				// On initial contact, alert the server that this is a new account creation connection
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
 					socket.emit('SERVER INITIAL CONNECT', "newAccount");
 				});
 
+				// On new account creation success
 				socket.on('CLIENT NEW ACCOUNT SUCCESS', function(data) {
+
+					// Callback to display some messages and reload the login page
 					Materialize.toast('Your account has been created!', 1500, '', function() {
 						Materialize.toast('Returning to Login', 1500, '', function() {
 							document.location.href = "Login.html";
@@ -108,6 +119,7 @@
 					});
 				});
 
+				// On new account creation failure
 				socket.on('CLIENT NEW ACCOUNT FAILED', function(data) {
 					Materialize.toast(data, 2500);
 				});
@@ -119,8 +131,10 @@
 	</head>
 	<body class="teal accent-2">
 
+		<!-- FADE WRAPPER -->
 		<div id="fade-wrapper">
 
+			<!-- PAGE CONTENT -->
 			<div class="login-page">
 				<div class="form z-depth-3">
 					<form class="login-form">
@@ -142,6 +156,7 @@
 				</div>
 			</div>
 
+			<!-- STANDARD FOOTER -->
 			<div class="footer">
 				<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
 			</div>

@@ -142,7 +142,7 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 		numberOfConnections--;
 
 		var disconnectedUser = getUserFromSocket(socket);
-		console.log('User ' + disconnectedUser.username + ' has disconnected.');
+		//console.log('User ' + disconnectedUser.username + ' has disconnected.');
 
 		for (var i in users) {
 			var user = users[i];

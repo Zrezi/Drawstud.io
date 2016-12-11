@@ -16,6 +16,7 @@
 		<!-- SOCKET IO -->
 		<script src="../socket.io/socket.io.js"></script>
 
+		<!-- CSS -->
 		<style>
 			.login-page {
 				width: 360px;
@@ -56,13 +57,14 @@
 
 		<script>
 
+			// Socket io object
 			var socket;
 
+			// On page load
 			$(document).ready(function() {
 
+				// Fade in the page
 				$('#fade-wrapper').fadeIn(500);
-
-
 
 				// Connect to the socket and quit if it doesn't connect
 				socket  = io.connect();
@@ -71,38 +73,43 @@
 					return false;
 				}
 
+				// Add click event to login button
 				$('#loginButton')[0].addEventListener('click', function(e) {
+
+					// Prevent default behavior (page change)
 					e.preventDefault();
-					
+
+					// Get reference to the input values
 					var username = $('#username').val()
 					var password = $('#password').val();
 
+					// If the username and password have information entered in them
 					if (username != '' && password != '' && username != null &&  password != null) {
 
+						// Request a login from the server
 						socket.emit('SERVER REQUEST LOGIN', {username: username, password: password});
-
 					} else {
 
-						Materialize.toast('Something\'s wrong!', 2000);
-
+						// Otherwise alert the client
+						Materialize.toast('Enter a username and/or a password!', 2500);
 					}
-
 				}, true);
 
+				// On initial contact, alert the server that this is a login page connection
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
 					socket.emit('SERVER INITIAL CONNECT', "login");
 				});
 
+				// On login success
 				socket.on('CLIENT LOGIN SUCCESS', function(data) {
-
 					// Set a session storage item for the username
 					sessionStorage.setItem('dsio__username', data.username);
 
+					// Change the page
 					document.location.href = "Dashboard.html";
-
-
 				});
 
+				// On login fail, alert the user why (dictated by the server)
 				socket.on('CLIENT LOGIN FAILED', function(data) {
 					Materialize.toast(data, 2500);
 				});
@@ -114,8 +121,10 @@
 	</head>
 	<body class="teal accent-2">
 
+		<!-- FADE WRAPPER -->
 		<div id="fade-wrapper">
 
+			<!-- PAGE CONTENT -->
 			<div class="login-page">
 				<div class="form z-depth-3">
 					<form class="login-form">
@@ -133,11 +142,11 @@
 				</div>
 			</div>
 
+			<!-- STANDARD FOOTER -->
 			<div class="footer">
 				<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">x</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
 			</div>
 
 		</div>
-
 	</body>
 </html>

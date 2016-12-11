@@ -15,6 +15,10 @@
         {
             "username": "R",
             "password": "$2a$10$0QpZOyi8H7CzGKHbjSV1H.SzHPC7uNFZ/M6qV6rUbc5oFv42uzfxy"
+        },
+        {
+            "username": "Alex",
+            "password": "$2a$10$HFEdygI.Wvn.U/xsJAjB5u3kN5ehTQl7iPoNyqsiiTQPZK3Z9u4re"
         }
     ]
 }

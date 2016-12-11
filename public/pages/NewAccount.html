@@ -109,7 +109,7 @@
 				});
 
 				// On new account creation success
-				socket.on('CLIENT NEW ACCOUNT SUCCESS', function(data) {
+				socket.on('CLIENT UPDATE NEW ACCOUNT SUCCESS', function(data) {
 
 					// Callback to display some messages and reload the login page
 					Materialize.toast('Your account has been created!', 1500, '', function() {
@@ -120,7 +120,7 @@
 				});
 
 				// On new account creation failure
-				socket.on('CLIENT NEW ACCOUNT FAILED', function(data) {
+				socket.on('CLIENT UPDATE NEW ACCOUNT FAILED', function(data) {
 					Materialize.toast(data, 2500);
 				});
 

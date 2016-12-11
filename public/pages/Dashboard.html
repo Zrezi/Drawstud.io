@@ -68,10 +68,10 @@
 				width: 100%;
 			}
 			#toast-container {
-			  top: 10%;
-			  right: 10%;
-			  bottom: auto !important;
-			  left: auto !important;
+				top: 10%;
+				right: 10%;
+				bottom: auto !important;
+				left: auto !important;
 			}
 		</style>
 
@@ -92,7 +92,7 @@
 				// Connect to the socket and quit if it doesn't connect
 				socket  = io.connect();
 				if (!socket) {
-					console.log('IO DIDN\'T WORK')
+					console.log('IO DIDN\'T WORK');
 					return false;
 				}
 
@@ -131,7 +131,7 @@
 					} else {
 						Materialize.toast('Only letters! No spaces or other characters, sorry!', 2500);
 					}
-				})
+				});
 
 				socket.on('CLIENT INITIAL CONNECT' ,function() {
 					socket.emit('SERVER INITIAL CONNECT', "dashboard");
@@ -162,7 +162,7 @@
 				});
 
 				// On room creation success
-				socket.on('CLIENT UPDATE CREATE ROOM SUCCESSFUL', function(data) {
+				socket.on('CLIENT UPDATE CREATE ROOM SUCCESS', function(data) {
 
 					// Set the session storage room
 					sessionStorage.setItem('dsio__room', data);
@@ -170,6 +170,10 @@
 					// Change the page to the drawing room
 					// DrawingRoom.html will take a look at the sessionStorage item stored above and go from there
 					document.location.href = "DrawingRoom.html";
+				});
+
+				socket.on('CLIENT UPDATE CREATE ROOM FAILED', function(data) {
+					Materialize.toast('That room already exists!', 2500);
 				});
 
 			    socket.on('CLIENT UPDATE CONNECTED USERS AMOUNT', function(data) {

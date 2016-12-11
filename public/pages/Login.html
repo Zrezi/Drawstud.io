@@ -101,7 +101,7 @@
 				});
 
 				// On login success
-				socket.on('CLIENT LOGIN SUCCESS', function(data) {
+				socket.on('CLIENT UPDATE LOGIN SUCCESS', function(data) {
 					// Set a session storage item for the username
 					sessionStorage.setItem('dsio__username', data.username);
 
@@ -110,7 +110,7 @@
 				});
 
 				// On login fail, alert the user why (dictated by the server)
-				socket.on('CLIENT LOGIN FAILED', function(data) {
+				socket.on('CLIENT UPDATE LOGIN FAILED', function(data) {
 					Materialize.toast(data, 2500);
 				});
 

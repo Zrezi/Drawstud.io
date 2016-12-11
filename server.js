@@ -119,7 +119,7 @@ function addNewAccountSocketEventsToSocket(socket, uniqueID) {
 		for (var i in accounts) {
 			var account = accounts[i];
 			if (account.username == data.username) {
-				socket.emit('CLIENT NEW ACCOUNT FAILED', "Username is already taken!");
+				socket.emit('CLIENT UPDATE NEW ACCOUNT FAILED', "Username is already taken!");
 				return;
 			}
 		}
@@ -132,7 +132,7 @@ function addNewAccountSocketEventsToSocket(socket, uniqueID) {
 				/*if (err != null) console.error(err);*/
 			});
 			// tell the client that their account was created
-			socket.emit('CLIENT NEW ACCOUNT SUCCESS');
+			socket.emit('CLIENT UPDATE NEW ACCOUNT SUCCESS');
 		});
 		
 	})
@@ -150,9 +150,9 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 
 				bcrypt.compare(data.password, account.password, function(err, res) {
 					if (res) {
-						socket.emit('CLIENT LOGIN SUCCESS', data);
+						socket.emit('CLIENT UPDATE LOGIN SUCCESS', data);
 					} else {
-						socket.emit('CLIENT LOGIN FAILED', "Wrong password!");
+						socket.emit('CLIENT UPDATE LOGIN FAILED', "Wrong password!");
 					}
 				});
 				
@@ -183,7 +183,7 @@ function addDashboardSocketEventsToSocket(socket, uniqueID) {
 
 		createdRooms.push(data);
 		line_history[data] = [];
-		socket.emit('CLIENT UPDATE CREATE ROOM SUCCESSFUL', data);
+		socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', data);
 	});
 
 }

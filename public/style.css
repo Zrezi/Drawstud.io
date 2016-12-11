@@ -2,46 +2,44 @@
 	margin: 0;
 	padding: 0;
 }
-
 html, body {
 	height: 100%;
 	background-color: #64ffda;
 }
-
 canvas {
 	position: absolute;
 	outline: white 10px dashed;
 }
-
 .spacer-med {
 	height: 5vh;
 }
-
 .spacer-sm {
 	height: 2.5vh;
 }
-
 #cursorParent {
 	position: relative;
 	height: 60vh;
 	background-color: white;
 }
-
 .btn {
 	height: 10vh;
 }
-
 #buttons {
 	color: black;
 }
-
 #toast-container {
   top: 10%;
-  right: 5%;
+  right: 10%;
   bottom: auto !important;
   left: auto !important;
 }
-
 .nav-item {
 	color: black;
+}
+.footer {
+text-align: center;
+position: fixed;
+color: #009688;
+bottom: 0;
+width: 100%;
 }

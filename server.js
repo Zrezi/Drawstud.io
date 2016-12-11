@@ -58,9 +58,6 @@ io.on('connection', function (socket) {
 		if (data == "dashboard") {
 			addDashboardSocketEventsToSocket(socket, uniqueID);
 			console.log('New connection : Dashboard');
-
-
-			socket.join('dashboard');
 		}
 
 		addJSONFileSocketEventsToSocket(socket, uniqueID);

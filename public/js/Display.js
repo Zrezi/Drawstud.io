@@ -43,7 +43,7 @@ class Display {
 		Display.cursorCanvasContext.font = Math.round((Display.unitSize.X / Display.unitSize.Y) + 10) + 'pt Arial';
 
 		// Send a server request to get what's drawn on the screen
-		if (isVerified) socket.emit('SERVER REQUEST REDRAW');
+		socket.emit('SERVER REQUEST REDRAW');
 
 	}
 

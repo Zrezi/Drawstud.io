@@ -111,6 +111,11 @@
 					$('#modal-viewRooms').modal('open');
 				});
 
+				$('#logout')[0].addEventListener('click', function(e) {
+					sessionStorage.clear();
+					document.location.href = "Login.html";
+				});
+
 				$('#createRoomButton')[0].addEventListener('click', function(e) {
 					var text = $('#roomNameInput').val();
 
@@ -193,6 +198,9 @@
 								<button class="btn col s12" id="viewProfile">View Profile</button>
 							</div>
 						</div>
+						<div style="height: 2.5vh;"></div>
+						<button class="btn col s12" id="logout">Logout</button>
+
 
 					</div>
 				</div>

@@ -184,8 +184,6 @@ function mouseMove(e) {
 	Input.mouse.x = e.pageX - offset.left;
 	Input.mouse.y = e.pageY - offset.top;
 
-	socket.emit('SERVER UPDATE MOVE CURSOR', {user: user, x: Input.mouse.x / Display.canvas.width, y: Input.mouse.y / Display.canvas.height});
-	
 	Input.mouse.isMoving = true;
 }
 
@@ -228,8 +226,6 @@ function touchMove(e) {
 
 	Input.mouse.x = e.touches[0].pageX - offset.left;
 	Input.mouse.y = e.touches[0].pageY - offset.top;
-
-	socket.emit('SERVER UPDATE MOVE CURSOR', {user: user, x: Input.mouse.x / Display.canvas.width, y: Input.mouse.y / Display.canvas.height});
 	
 	Input.mouse.isMoving = true;
 }

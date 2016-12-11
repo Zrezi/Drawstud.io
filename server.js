@@ -86,44 +86,10 @@ function getUserFromSocket(socket) {
 }
 
 function addDrawingSocketEventsToSocket(socket, uniqueID) {
-	/*// Tell the server to update the socket's username
-	socket.on('SERVER SET USERNAME', function(data) {
-
-		// If the username is already used
-		if (checkForExistingUsername(data) || data == '' || data == null) {
-
-			// The requested username has already been taken, choose another
-			socket.emit('CLIENT REQUEST USERNAME', true);
-
-		} else {
-
-			// Create a new user object
-			var user = {};
-			user.uniqueID = uniqueID;
-			user.username = data;
-			user.position = {x: 0, y: 0};
-
-			// Also add a socket variable with a reference to the username. This will be used to disconnect users
-			socket.username = data;
-
-			// Tell the user that they are verified
-			socket.emit('CLIENT SET VERIFIED', {you: user, them: users});
-
-			// Push it onto the user array
-			users.push(user);
-
-			// Let other users connected to the server know of the client's existence
-			socket.broadcast.emit('CLIENT UPDATE NEW USER', user);
-		}
-	});*/
 
 	socket.on('SERVER SET CLIENT ROOM', function(data) {
 		socket.room = data;
 		socket.join(socket.room);
-	});
-
-	socket.on('SERVER UPDATE MOVE CURSOR', function(data) {
-		socket.broadcast.to(socket.room).emit('CLIENT UPDATE MOVE CURSOR', data);
 	});
 
 	socket.on('SERVER UPDATE DRAW LINE', function (data) {
@@ -134,23 +100,6 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 	socket.on('SERVER REQUEST REDRAW', function(data) {
 		for (var i in line_history[socket.room]) {
 			socket.emit('CLIENT UPDATE DRAW LINE', line_history[socket.room][i]);
-		}
-	});
-
-	socket.on('disconnect', function() {
-
-		numberOfConnections--;
-
-		var disconnectedUser = getUserFromSocket(socket);
-		//console.log('User ' + disconnectedUser.username + ' has disconnected.');
-
-		for (var i in users) {
-			var user = users[i];
-			if (user.username == disconnectedUser.username) {
-				users.splice(i, 1);
-				socket.broadcast.to(socket.room).emit('CLIENT UPDATE USER DISCONNECTED', disconnectedUser);
-				break;
-			}
 		}
 	});
 

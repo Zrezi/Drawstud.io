@@ -143,66 +143,6 @@ function handleSocketEvents() {
         start();
     });
 
-    // On disconnect
-    socket.on('CLIENT UPDATE USER DISCONNECTED', function(data) {
-        for (var i in otherUsers) {
-            var user = otherUsers[i];
-            if (user.username == data.username) {
-                otherUsers.splice(i, 1);
-                Materialize.toast(data.username + ' has disconnected.', 2000);
-                break;
-            }
-        }
-    });
-
-    /*socket.on('CLIENT REQUEST USERNAME', function(data){
-        if (sessionStorage.getItem('ds__username')) {
-            socket.emit('SERVER SET USERNAME', sessionStorage.getItem('ds__username'));
-            return;
-        }
-
-        var name;
-
-    	if (data) {
-    		name = prompt('Try again!')
-    	} else {
-    		name = prompt('Type a username!');
-    	}
-
-        if (name != null) {
-            socket.emit('SERVER SET USERNAME', name);
-        } else {
-            socket.emit('SERVER SET USERNAME', null);
-        }
-    });*/
-
-    /*socket.on('CLIENT SET VERIFIED', function(data) {
-
-        user = data.you;
-        otherUsers = data.them;
-
-        isVerified = true;
-        socket.emit('SERVER REQUEST REDRAW');
-
-        // Start the program loop
-        start();
-    });*/
-
-    socket.on('CLIENT UPDATE NEW USER', function(data) {
-        otherUsers.push(data);
-        Materialize.toast(data.username + ' has joined!', 2000);
-    });
-
-    socket.on('CLIENT UPDATE MOVE CURSOR', function(data) {
-        for (var i in otherUsers) {
-            var user = otherUsers[i];
-            if (user.username == data.user.username) {
-                user.position.x = data.x * Display.canvas.width;
-                user.position.y = data.y * Display.canvas.height;
-            }
-        }
-    });
-
     socket.on('CLIENT UPDATE DRAW LINE', function(data) {
     	// Get context variables before the draw
         var style = Display.context.strokeStyle;

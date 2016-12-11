@@ -173,4 +173,8 @@ function handleSocketEvents() {
         Display.context.clearRect(0, 0, Display.canvas.width, Display.canvas.height);
         Materialize.toast('Screen Cleared By ' + data, 2000);
     });
+
+    socket.on('CLIENT UPDATE CONNECTED USERS AMOUNT', function(data) {
+       $('#onlinePeople').html(data); 
+    });
 }

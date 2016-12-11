@@ -24,7 +24,10 @@ var file = 'public/jsonDB.json';
 jsonfile.spaces = 4
 var jsonDB = jsonfile.readFileSync(file);
 
-
+// Every 10 seconds, update the clients with the number of connections
+interval = setInterval(function() {
+	io.emit('CLIENT UPDATE CONNECTED USERS AMOUNT', numberOfConnections);
+}, 10000);
 
 io.on('connection', function (socket) {
 
@@ -35,6 +38,8 @@ io.on('connection', function (socket) {
 
 	socket.emit('CLIENT INITIAL CONNECT');
 
+	socket.emit('CLIENT UPDATE CONNECTED USERS AMOUNT', numberOfConnections);
+
 	// Null this variable
 	socket.room = null;
 
@@ -42,26 +47,24 @@ io.on('connection', function (socket) {
 
 		if (data == "draw") {
 			addDrawingSocketEventsToSocket(socket, uniqueID);
-			//socket.emit('CLIENT REQUEST USERNAME', false);
 		}
 
 		if (data == "newAccount") {
 			addNewAccountSocketEventsToSocket(socket, uniqueID);
-			console.log('New connection : Create an Account');
 		}
 
 		if (data == "login") {
 			addLoginSocketEventsToSocket(socket, uniqueID);
-			console.log('New connection : Login');
 		}
 
 		if (data == "dashboard") {
 			addDashboardSocketEventsToSocket(socket, uniqueID);
-			console.log('New connection : Dashboard');
 		}
 
-		addJSONFileSocketEventsToSocket(socket, uniqueID);
+	});
 
+	socket.on('disconnect', function() {
+		numberOfConnections--;
 	});
 	
 
@@ -183,20 +186,4 @@ function addDashboardSocketEventsToSocket(socket, uniqueID) {
 		socket.emit('CLIENT UPDATE CREATE ROOM SUCCESSFUL', data);
 	});
 
-}
-
-function addJSONFileSocketEventsToSocket(socket, uniqueID) {
-	socket.on('SERVER UPDATE JSONDATABASE', function(data) {
-
-		if (data.type == "account") {
-
-		}
-
-		//jsonDB = jsonfile.readFileSync(file);
-
-	});
-
-	socket.on('SERVER REQUEST JSONDATABASE DATA', function(data) {
-
-	});
 }

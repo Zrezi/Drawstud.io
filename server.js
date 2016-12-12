@@ -33,32 +33,28 @@ io.on('connection', function (socket) {
 
 	numberOfConnections++;
 
-	// Generate a unique ID
-	var uniqueID = Math.round((new Date).getTime() * Math.random());
-
 	socket.emit('CLIENT INITIAL CONNECT');
 
 	socket.emit('CLIENT UPDATE CONNECTED USERS AMOUNT', numberOfConnections);
 
-	// Null this variable
 	socket.room = null;
 
 	socket.on('SERVER INITIAL CONNECT', function(data) {
 
 		if (data == "draw") {
-			addDrawingSocketEventsToSocket(socket, uniqueID);
+			addDrawingSocketEventsToSocket(socket);
 		}
 
 		if (data == "newAccount") {
-			addNewAccountSocketEventsToSocket(socket, uniqueID);
+			addNewAccountSocketEventsToSocket(socket);
 		}
 
 		if (data == "login") {
-			addLoginSocketEventsToSocket(socket, uniqueID);
+			addLoginSocketEventsToSocket(socket);
 		}
 
 		if (data == "dashboard") {
-			addDashboardSocketEventsToSocket(socket, uniqueID);
+			addDashboardSocketEventsToSocket(socket);
 		}
 
 	});
@@ -67,28 +63,9 @@ io.on('connection', function (socket) {
 		numberOfConnections--;
 	});
 	
-
 });
 
-function checkForExistingUsername(name) {
-	for (var i in users) {
-		if (users[i].username == name) {
-			return true;
-		}
-	}
-	return false;
-}
-
-function getUserFromSocket(socket) {
-	for (var i in users) {
-		if (users[i].username == socket.username) {
-			return users[i];
-		}
-	}
-	return false;
-}
-
-function addDrawingSocketEventsToSocket(socket, uniqueID) {
+function addDrawingSocketEventsToSocket(socket) {
 
 	socket.on('SERVER SET CLIENT ROOM', function(data) {
 		socket.room = data;
@@ -112,7 +89,7 @@ function addDrawingSocketEventsToSocket(socket, uniqueID) {
 	});
 }
 
-function addNewAccountSocketEventsToSocket(socket, uniqueID) {
+function addNewAccountSocketEventsToSocket(socket) {
 	socket.on('SERVER REQUEST NEW ACCOUNT', function(data) {
 		var accounts = jsonDB.accounts;
 
@@ -138,7 +115,7 @@ function addNewAccountSocketEventsToSocket(socket, uniqueID) {
 	})
 }
 
-function addLoginSocketEventsToSocket(socket, uniqueID) {
+function addLoginSocketEventsToSocket(socket) {
 	socket.on('SERVER REQUEST LOGIN', function(data) {
 
 		var accounts = jsonDB.accounts;
@@ -161,21 +138,20 @@ function addLoginSocketEventsToSocket(socket, uniqueID) {
 			}
 		}
 
-		socket.emit('CLIENT LOGIN FAILED', "That user cannot be found.");
+		socket.emit('CLIENT UPDATE LOGIN FAILED', "That user cannot be found.");
 
 	});
 }
 
-function addDashboardSocketEventsToSocket(socket, uniqueID) {
+function addDashboardSocketEventsToSocket(socket) {
 
 	socket.on('SERVER REQUEST VIEW ROOMS', function(data) {
 		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', createdRooms);
 	});
 
 	socket.on('SERVER REQUEST CREATE ROOM', function(data) {
-		var rooms = Object.keys(io.sockets.adapter.rooms);
-		for (var i in rooms) {
-			if (data == rooms[i]) {
+		for (var i in createdRooms) {
+			if (data == createdRooms[i]) {
 				socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
 				return;
 			}

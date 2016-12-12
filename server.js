@@ -13,10 +13,14 @@ app.use(express.static(__dirname + '/public'));
 console.log("Server running on 127.0.0.1:5007");
 
 var users = [];
+
+// The number of active connections to the server from any page
 var numberOfConnections = 0;
 
+// An array keeping track of all of the user created rooms
 var createdRooms = [];
 
+// Will eventually because an array of arrays (of lines)
 var line_history = [];
 
 // Get the json database
@@ -87,9 +91,11 @@ function addDrawingSocketEventsToSocket(socket) {
 		io.sockets.in(socket.room).emit('CLIENT UPDATE CLEAR CANVAS', data);
 		line_history[socket.room] = [];
 	});
+
 }
 
 function addNewAccountSocketEventsToSocket(socket) {
+
 	socket.on('SERVER REQUEST NEW ACCOUNT', function(data) {
 		var accounts = jsonDB.accounts;
 
@@ -112,10 +118,12 @@ function addNewAccountSocketEventsToSocket(socket) {
 			socket.emit('CLIENT UPDATE NEW ACCOUNT SUCCESS');
 		});
 		
-	})
+	});
+
 }
 
 function addLoginSocketEventsToSocket(socket) {
+
 	socket.on('SERVER REQUEST LOGIN', function(data) {
 
 		var accounts = jsonDB.accounts;
@@ -141,6 +149,7 @@ function addLoginSocketEventsToSocket(socket) {
 		socket.emit('CLIENT UPDATE LOGIN FAILED', "That user cannot be found.");
 
 	});
+
 }
 
 function addDashboardSocketEventsToSocket(socket) {

@@ -34,13 +34,13 @@ $(document).ready(function() {
     // Add all of the listeners
     document.addEventListener('keydown', keyPressed, true);
     document.addEventListener('keyup', keyReleased, true);
-    Display.cursorCanvas.addEventListener('mousedown', mousePressed, true);
-    Display.cursorCanvas.addEventListener('mouseup', mouseReleased, true);
-    Display.cursorCanvas.addEventListener('mousemove', mouseMove, true);
-    Display.cursorCanvas.addEventListener('touchstart', touchPressed, false);
-    Display.cursorCanvas.addEventListener('touchend', touchReleased, false);
-    Display.cursorCanvas.addEventListener('touchmove', touchMove, false);
-    $('#cursorCanvas').on('mousewheel', mousewheel);
+    Display.canvas.addEventListener('mousedown', mousePressed, true);
+    Display.canvas.addEventListener('mouseup', mouseReleased, true);
+    Display.canvas.addEventListener('mousemove', mouseMove, true);
+    Display.canvas.addEventListener('touchstart', touchPressed, false);
+    Display.canvas.addEventListener('touchend', touchReleased, false);
+    Display.canvas.addEventListener('touchmove', touchMove, false);
+    $('#canvas').on('mousewheel', mousewheel);
 
     // Set the window's resize method to Display's resize method
     window.onresize = Display.resizeDisplay;
@@ -56,8 +56,6 @@ $(document).ready(function() {
 function start() {
 
     interval = setInterval(function() {
-
-        // && !isWithinBounds(0, Display.canvas.height * 0.90, Display.canvas.width, Display.canvas.height)
 
         if (Input.mouse.buttonsPressed["left button"] && Input.mouse.isMoving) {
 
@@ -92,33 +90,6 @@ function start() {
             // So there isn't infinite lines drawn when the mouse button is clicked, but the mouse isn't moving
             Input.mouse.isMoving = false;
 
-        }
-
-        if (Input.keysPressed["escape"] && !Input.blockedKeys["escape"]) {
-            Input.blockedKeys["escape"] = true;
-            clearScreen();
-        }
-
-        // Refresh the cursor canvas
-        Display.cursorCanvasContext.clearRect(0, 0, Display.cursorCanvas.width, Display.cursorCanvas.height);
-
-        // Draw each user on the canvas
-        for (var i in otherUsers) {
-            var otherUser = otherUsers[i];
-            Display.cursorCanvasContext.drawImage(cursorImage, otherUser.position.x, otherUser.position.y);
-
-            Display.cursorCanvasContext.fillStyle = '#FFFFFF';
-            Display.cursorCanvasContext.textBaseline = 'middle';
-
-            var tm = Display.cursorCanvasContext.measureText(otherUser.username);
-
-            var w = tm.width;
-            var h = parseInt(Display.cursorCanvasContext.font);;
-
-            Display.cursorCanvasContext.fillRect(otherUser.position.x + 10, otherUser.position.y - h / 2, w, h);
-
-            Display.cursorCanvasContext.fillStyle = '#000000';
-            Display.cursorCanvasContext.fillText(otherUser.username, otherUser.position.x + 10, otherUser.position.y);
         }
 
     }, 1000 / FPS);

@@ -179,17 +179,21 @@ function keyReleased(e) {
 
 function mouseMove(e) {
 
+	// Get the offset of the canvas element on the page
 	var offset = $('#canvas').offset();
 
+	// Get the position on the canvas
 	Input.mouse.x = e.pageX - offset.left;
 	Input.mouse.y = e.pageY - offset.top;
 
+	// Mouse moving is now true
 	Input.mouse.isMoving = true;
 }
 
 function mousePressed(e) {
 	Input.mouse.buttonsPressed[MouseButtonCodes[e.button]] = true;
 
+	// Update coords
 	coords = {x: Input.mouse.x / Display.canvas.width, y: Input.mouse.y / Display.canvas.height};
 }
 
@@ -204,13 +208,17 @@ function mousewheel(e) {
 function touchPressed(e) {
 	if ($(e.target).is("canvas")) e.preventDefault();
 
+	// Simulate mouse press
 	Input.mouse.buttonsPressed["left button"] = true;
 
+	// Get the offset of the canvas element on the page
 	var offset = $('#canvas').offset();
 
+	// Get the position on the actual canvas
 	Input.mouse.x = e.touches[0].pageX - offset.left;
 	Input.mouse.y = e.touches[0].pageY - offset.top;
 
+	// Update coords
 	coords = {x: Input.mouse.x / Display.canvas.width, y: Input.mouse.y / Display.canvas.height};
 }
 

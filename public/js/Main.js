@@ -24,10 +24,6 @@ $(document).ready(function() {
 		return false;
 	}
 
-    // Load up cursor image
-    cursorImage = new Image();
-    cursorImage.src = "img/cursor.png";
-
     // Init the display object
     Display.init();
 

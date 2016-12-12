@@ -21,7 +21,7 @@ var line_history = [];
 
 // Get the json database
 var file = 'public/jsonDB.json';
-jsonfile.spaces = 4
+jsonfile.spaces = 4;
 var jsonDB = jsonfile.readFileSync(file);
 
 // Every 10 seconds, update the clients with the number of connections

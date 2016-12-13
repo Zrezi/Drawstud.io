@@ -141,23 +141,30 @@
 
 					// Reset information table, recreate it dynamically from the server, and append it to the view room modal
 					$('#roomInformation').html('');
-					var element = '<table>';
+					var element = '<table id="#generatedTable">';
 					element += '<thead><tr><th data-field="name">Name</th><th data-field="connect">Connect</th></tr></thead>';
 					element += '<tbody>'
 					for (var i in data) {
 						element += '<tr><td>' + data[i] + '</td><td><button class="btn" id="room-' + data[i] + '">Connect</button></td></tr>'
 					}
 					element += '</tbody></table>'
-					$('#roomInformation').append(element);
+
 
 					// Add click listeners on all of them
-					for (var i in data) {
+					var buttonLocations = {};
+					for (var i = 0; i < data.length; i++) {
 						var name = '#room-' + data[i];
-						$(name)[0].addEventListener('click', function(e) {
-							sessionStorage.setItem('dsio__room', data[i]);
+						buttonLocations[name] = data[i];
+						generateClickEvent(name);
+					}
+					function generateClickEvent(element) {
+						$(document).on('click', element, function(e) {
+							sessionStorage.setItem('dsio__room', buttonLocations[element]);
 							document.location.href = "DrawingRoom.html";
 						});
 					}
+
+					$('#roomInformation').append(element);
 
 				});
 
@@ -166,6 +173,7 @@
 
 					// Set the session storage room
 					sessionStorage.setItem('dsio__room', data);
+					console.log('Set dsio__room to ' + data);
 
 					// Change the page to the drawing room
 					// DrawingRoom.html will take a look at the sessionStorage item stored above and go from there

@@ -103,7 +103,7 @@ function getUserReference() {
 function handleSocketEvents() {
 
     socket.on('CLIENT INITIAL CONNECT', function() {
-        Materialize.toast('Connected to drawing server', 2500);
+        Materialize.toast(sessionStorage.getItem('dsio__room'), 2500);
         socket.emit('SERVER INITIAL CONNECT', "draw");
         socket.emit('SERVER SET CLIENT ROOM', sessionStorage.getItem('dsio__room'));
         socket.emit('SERVER REQUEST REDRAW');

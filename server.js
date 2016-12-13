@@ -1,3 +1,4 @@
+// Import Nodejs modules
 var express = require('express'), 
 app = express(),
 http = require('http'),
@@ -12,18 +13,17 @@ server.listen(5007);
 app.use(express.static(__dirname + '/public'));
 console.log("Server running on 127.0.0.1:5007");
 
-var users = [];
-
 // The number of active connections to the server from any page
 var numberOfConnections = 0;
 
 // An array keeping track of all of the user created rooms
 var createdRooms = [];
 
-// Will eventually because an array of arrays (of lines)
+// Will eventually because an array of arrays (of line objects)
+// line_history['room name'] => [{line 1 object}, {line 2 object}, ...]
 var line_history = [];
 
-// Get the json database
+// Get the json database on server load
 var file = 'public/jsonDB.json';
 jsonfile.spaces = 4;
 var jsonDB = jsonfile.readFileSync(file);
@@ -159,6 +159,8 @@ function addDashboardSocketEventsToSocket(socket) {
 	});
 
 	socket.on('SERVER REQUEST CREATE ROOM', function(data) {
+
+		// Check all rooms for name errors
 		for (var i in createdRooms) {
 			if (data == createdRooms[i]) {
 				socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
@@ -166,8 +168,14 @@ function addDashboardSocketEventsToSocket(socket) {
 			}
 		}
 
+		// Add the created room name to the array of created rooms
 		createdRooms.push(data);
+
+		// Initialize the array of arrays
+		// line_history['room name'] => []
 		line_history[data] = [];
+
+		// Tell the client it was a success
 		socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', data);
 	});
 

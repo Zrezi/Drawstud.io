@@ -24,6 +24,16 @@ Run `chmod +x run.sh` in a terminal and double click on `run.sh`, or alternative
 nodejs server.js
 ```
 
+# Up Next
+* Add multi-color drawing
+* Add different line widths
+* Add shapes
+* Start using Git branches!
+
+#### Known Issues
+* Rewrite server backend using [Async](https://www.npmjs.com/package/async)
+  * Will remove those nasty for loops in the server code
+
 # Version History
 
 * Version 1.0 -- Commit 27

@@ -1,17 +1,38 @@
 # Drawstud.io
 
-### Running the Node server on Windows
+A Node.js collaborative drawing application.
 
-Make sure you have Node installed. Run the `run.bat` file in the main directory, or open a command prompt and run
+## Running a Drawstud.io Server
+
+#### Install Node
+
+Make sure you have [Node](https://nodejs.org/en/) installed on your computer.
+
+#### Running the Node server on Windows
+
+Run the `run.bat` file in the main directory, or open a command prompt and run
 
 ```
 node server.js
 ```
 
-### Running the Node server on Linux
+#### Running the Node server on Linux
 
-Make sure you have Node installed. Run the `run.sh` in a terminal, or open a terminal and run
+Run `chmod +x run.sh` in a terminal and double click on `run.sh`, or alternatively, in terminal run
 
 ```
 nodejs server.js
 ```
+
+# Version History
+
+* Version 1.0 -- Commit 27
+  * User accounts
+    * [BCrypt](https://www.npmjs.com/package/bcrypt-nodejs) encryption of passwords
+    * Server verification for login
+    * JSON storage with [JSONFile](https://www.npmjs.com/package/jsonfile)
+  * Persistent user created rooms
+    * Instanced drawing rooms
+  * Touch-Enabled for mobile devices
+  * Connections via [socket.io](http://socket.io/)
+  * [Materialize CSS](http://materializecss.com/)

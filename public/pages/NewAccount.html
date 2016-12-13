@@ -63,9 +63,6 @@
 			// On page load
 			$(document).ready(function() {
 
-				// Fade in the page
-				$('#fade-wrapper').fadeIn(500);
-
 				// Connect to the socket and quit if it doesn't connect
 				socket  = io.connect();
 				if (!socket) {
@@ -127,6 +124,9 @@
 			    socket.on('CLIENT UPDATE CONNECTED USERS AMOUNT', function(data) {
 			       $('#onlinePeople').html(data); 
 			    });
+
+				// After generating everything, fade in the page
+				$('#fade-wrapper').fadeIn(500);
 
 			});
 

@@ -13,7 +13,9 @@ var otherUsers = [];
 // Used for drawing
 var coords = false;
 var lineWidth = 2;
-var lineColor = "black";
+var lineColor = "dodgerblue";
+
+var MATERIALIZE_TOAST_COLOR_CHANGE_TIME = 1250;
 
 $(document).ready(function() {
 
@@ -53,6 +55,31 @@ function start() {
 
     interval = setInterval(function() {
 
+        if (blockOnPress("r")) {
+            lineColor = "red";
+            Display.context.strokeStyle = lineColor;
+            Materialize.toast("Color changed to red.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
+        }
+
+        if (blockOnPress("y")) {
+            lineColor = "yellow";
+            Display.context.strokeStyle = lineColor;
+            Materialize.toast("Color changed to yellow.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
+        }
+
+        if (blockOnPress("g")) {
+            lineColor = "green";
+            Display.context.strokeStyle = lineColor;
+            Materialize.toast("Color changed to green.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
+        }
+
+        if (blockOnPress("b")) {
+            lineColor = "dodgerblue";
+            Display.context.strokeStyle = lineColor;
+            Materialize.toast("Color changed to blue.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
+        }
+
+
         if (Input.mouse.buttonsPressed["left button"] && Input.mouse.isMoving) {
 
             // Placeholder variables to make everything easier to write (and read for that matter)
@@ -75,7 +102,7 @@ function start() {
     	        {
     	            position: {x: normalizedX, y: normalizedY},
     	            previousPosition: coords,
-    	            color: lineColor,
+    	            lineColor: lineColor,
     	            lineWidth: lineWidth
     	        }
 		    );
@@ -90,6 +117,16 @@ function start() {
 
     }, 1000 / FPS);
 
+}
+
+// Helper function to automatically detect blocking keys (keys can only be "activated" once before released)
+function blockOnPress(key) {
+    if (Input.keysPressed[key] && !Input.blockedKeys[key]) {
+        Input.blockedKeys[key] = true;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function clearScreen() {
@@ -112,8 +149,8 @@ function handleSocketEvents() {
 
     socket.on('CLIENT UPDATE DRAW LINE', function(data) {
     	// Get context variables before the draw
-        var style = Display.context.strokeStyle;
-        var width = Display.context.lineWidth;
+        var old_color = Display.context.strokeStyle;
+        var old_width = Display.context.lineWidth;
 
         // Update the context variables to the line's style and color
         Display.context.strokeStyle = data.lineColor;
@@ -131,8 +168,8 @@ function handleSocketEvents() {
         Display.context.stroke();
 
         // Set the context variables back to their original value
-        Display.context.strokeStyle = style;
-        Display.context.lineWidth = width;
+        Display.context.strokeStyle = old_color;
+        Display.context.lineWidth = old_width;
     });
 
     // Simply wipe the canvas

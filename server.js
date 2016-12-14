@@ -4,7 +4,8 @@ app = express(),
 http = require('http'),
 socketIo = require('socket.io'),
 jsonfile = require('jsonfile'),
-bcrypt = require('bcrypt-nodejs');
+bcrypt = require('bcrypt-nodejs'),
+async = require('async');
 
 var server =  http.createServer(app);
 var io = socketIo.listen(server);

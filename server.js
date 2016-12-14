@@ -127,27 +127,44 @@ function addLoginSocketEventsToSocket(socket) {
 
 	socket.on('SERVER REQUEST LOGIN', function(data) {
 
-		var accounts = jsonDB.accounts;
+		async.series([
+			function(callback) {
+				var accounts = jsonDB.accounts;
 
-		for (var i in accounts) {
-			var account = accounts[i];
+				for (var i in accounts) {
+					var account = accounts[i];
 
-			if (account.username == data.username) {
+					if (account.username == data.username) {
 
-				bcrypt.compare(data.password, account.password, function(err, res) {
-					if (res) {
-						socket.emit('CLIENT UPDATE LOGIN SUCCESS', data);
-					} else {
-						socket.emit('CLIENT UPDATE LOGIN FAILED', "Wrong password!");
+						bcrypt.compare(data.password, account.password, function(err, res) {
+							if (res) {
+								callback(null, data);
+							} else {
+								callback(true, "Wrong password!");
+							}
+						});
+						
+						return;
+
 					}
-				});
-				
+				}
+
+				callback(true, "That user cannot be found.");
+
+			}],
+			function(err, results) {
+				if (err) {
+					socket.emit('CLIENT UPDATE LOGIN FAILED', results[0]);
+					return;
+				}
+				socket.emit('CLIENT UPDATE LOGIN SUCCESS', results[0]);
 				return;
+		});
+		
 
-			}
-		}
+				
 
-		socket.emit('CLIENT UPDATE LOGIN FAILED', "That user cannot be found.");
+		
 
 	});
 

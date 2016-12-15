@@ -95,6 +95,8 @@
 				// Materialize javascript call to initialize modals
 				$('.modal').modal();
 
+    			$('.tooltipped').tooltip({delay: 50});
+
 				// View Profile Button Listener
 				// Opens the Profile modal
 				$('#viewProfile')[0].addEventListener('click', function(e) {
@@ -220,13 +222,13 @@
 						<div style="height: 2.5vh;"></div>
 						<div class="row">
 							<div class="col l4 m12">
-								<button class="btn col s12" id="viewRooms">View Rooms</button>
+								<a class="btn col s12" id="viewRooms">View Rooms</a>
 							</div>
 							<div class="col l4 m12">
-								<button class="btn col s12" id="createRoom">Create a Room</button>
+								<a class="btn col s12" id="createRoom">Create a Room</a>
 							</div>
 							<div class="col l4 m12">
-								<button class="btn col s12" id="viewProfile">View Profile</button>
+								<a class="btn col s12" id="viewProfile">View Profile</a>
 							</div>
 						</div>
 						<div style="height: 2.5vh;"></div>

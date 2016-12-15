@@ -1,11 +1,11 @@
 // Import Nodejs modules
-var express = require('express'), 
-app = express(),
-http = require('http'),
-socketIo = require('socket.io'),
-jsonfile = require('jsonfile'),
-bcrypt = require('bcrypt-nodejs'),
-async = require('async');
+var express = require('express');
+var app = express();
+var http = require('http');
+var socketIo = require('socket.io');
+var jsonfile = require('jsonfile');
+var bcrypt = require('bcrypt-nodejs');
+var async = require('async');
 
 var server =  http.createServer(app);
 var io = socketIo.listen(server);
@@ -83,9 +83,16 @@ function addDrawingSocketEventsToSocket(socket) {
 	});
 
 	socket.on('SERVER REQUEST REDRAW', function(data) {
-		for (var i in line_history[socket.room]) {
-			socket.emit('CLIENT UPDATE DRAW LINE', line_history[socket.room][i]);
-		}
+		async.series([
+			function(callback) {
+				for (var i in line_history[socket.room]) {
+					socket.emit('CLIENT UPDATE DRAW LINE', line_history[socket.room][i]);
+				}
+				callback(null, null);
+			}],
+			function(err, results) {
+
+			})
 	});
 
 	socket.on('SERVER UPDATE CLEAR CANVAS', function(data) {
@@ -144,6 +151,7 @@ function addLoginSocketEventsToSocket(socket) {
 							}
 						});
 						
+						// Regardless if that password was correct or not, return since we've found the user
 						return;
 
 					}
@@ -177,24 +185,37 @@ function addDashboardSocketEventsToSocket(socket) {
 	});
 
 	socket.on('SERVER REQUEST CREATE ROOM', function(data) {
+		async.series([
+			function(callback) {
 
-		// Check all rooms for name errors
-		for (var i in createdRooms) {
-			if (data == createdRooms[i]) {
-				socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
-				return;
-			}
-		}
+				// Check all rooms for name errors
+				for (var i in createdRooms) {
+					if (data == createdRooms[i]) {
+						callback(true, null);
+						return;
+					}
+				}
 
-		// Add the created room name to the array of created rooms
-		createdRooms.push(data);
+				callback(null, data);
 
-		// Initialize the array of arrays
-		// line_history['room name'] => []
-		line_history[data] = [];
+			}],
+			function(err, results) {
+				if (err) {
+					socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
+					return;
+				}
 
-		// Tell the client it was a success
-		socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', data);
+				// Add the created room name to the array of created rooms
+				createdRooms.push(results[0]);
+
+				// Initialize the array of arrays
+				// line_history['room name'] => []
+				line_history[data] = [];
+
+				// Tell the client it was a success
+				socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', results[0]);
+
+		});
 	});
 
 }

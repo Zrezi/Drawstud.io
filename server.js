@@ -6,6 +6,7 @@ var socketIo = require('socket.io');
 var jsonfile = require('jsonfile');
 var bcrypt = require('bcrypt-nodejs');
 var async = require('async');
+var asyncLoop = require('node-async-loop');
 
 var server =  http.createServer(app);
 var io = socketIo.listen(server);
@@ -35,187 +36,129 @@ interval = setInterval(function() {
 }, 10000);
 
 io.on('connection', function (socket) {
-
 	numberOfConnections++;
-
 	socket.emit('CLIENT INITIAL CONNECT');
-
 	socket.emit('CLIENT UPDATE CONNECTED USERS AMOUNT', numberOfConnections);
-
 	socket.room = null;
-
 	socket.on('SERVER INITIAL CONNECT', function(data) {
-
 		if (data == "draw") {
 			addDrawingSocketEventsToSocket(socket);
 		}
-
 		if (data == "newAccount") {
 			addNewAccountSocketEventsToSocket(socket);
 		}
-
 		if (data == "login") {
 			addLoginSocketEventsToSocket(socket);
 		}
-
 		if (data == "dashboard") {
 			addDashboardSocketEventsToSocket(socket);
 		}
-
 	});
-
 	socket.on('disconnect', function() {
 		numberOfConnections--;
 	});
-	
 });
 
 function addDrawingSocketEventsToSocket(socket) {
-
 	socket.on('SERVER SET CLIENT ROOM', function(data) {
 		socket.room = data;
 		socket.join(socket.room);
 	});
-
 	socket.on('SERVER UPDATE DRAW LINE', function (data) {
 		line_history[socket.room].push(data);
 		socket.broadcast.to(socket.room).emit('CLIENT UPDATE DRAW LINE', data);
 	});
-
 	socket.on('SERVER REQUEST REDRAW', function(data) {
-		async.series([
-			function(callback) {
-				for (var i in line_history[socket.room]) {
-					socket.emit('CLIENT UPDATE DRAW LINE', line_history[socket.room][i]);
+		var array = line_history[socket.room];
+		if (array.length > 0) {
+			asyncLoop(array,
+				function(item, next) {
+					socket.emit('CLIENT UPDATE DRAW LINE', item);
+					next();
 				}
-				callback(null, null);
-			}],
-			function(err, results) {
-
-			})
+			);
+		}
 	});
-
 	socket.on('SERVER UPDATE CLEAR CANVAS', function(data) {
 		io.sockets.in(socket.room).emit('CLIENT UPDATE CLEAR CANVAS', data);
 		line_history[socket.room] = [];
 	});
-
 }
 
 function addNewAccountSocketEventsToSocket(socket) {
-
 	socket.on('SERVER REQUEST NEW ACCOUNT', function(data) {
 		var accounts = jsonDB.accounts;
-
-		for (var i in accounts) {
-			var account = accounts[i];
-			if (account.username == data.username) {
-				socket.emit('CLIENT UPDATE NEW ACCOUNT FAILED', "Username is already taken!");
-				return;
+		asyncLoop(accounts,
+			function(item, next) {
+				if (item.username == data.username) {
+					socket.emit('CLIENT UPDATE NEW ACCOUNT FAILED', "Username is already taken!");
+					return;
+				}
+				next();
+			}, function() {
+				bcrypt.hash(data.password, null, null, function(err, hash) {
+				    // Store hash in your password DB.
+				    // write new account to json database
+					jsonDB.accounts.push({username: data.username, password: hash});
+					jsonfile.writeFile(file, jsonDB, function (err) {
+						/*if (err != null) console.error(err);*/
+					});
+					// tell the client that their account was created
+					socket.emit('CLIENT UPDATE NEW ACCOUNT SUCCESS');
+					return;
+				});
 			}
-		}
-
-		bcrypt.hash(data.password, null, null, function(err, hash) {
-		    // Store hash in your password DB.
-		    // write new account to json database
-			jsonDB.accounts.push({username: data.username, password: hash});
-			jsonfile.writeFile(file, jsonDB, function (err) {
-				/*if (err != null) console.error(err);*/
-			});
-			// tell the client that their account was created
-			socket.emit('CLIENT UPDATE NEW ACCOUNT SUCCESS');
-		});
-		
+		);
 	});
-
 }
 
 function addLoginSocketEventsToSocket(socket) {
-
 	socket.on('SERVER REQUEST LOGIN', function(data) {
-
-		async.series([
-			function(callback) {
-				var accounts = jsonDB.accounts;
-
-				for (var i in accounts) {
-					var account = accounts[i];
-
-					if (account.username == data.username) {
-
-						bcrypt.compare(data.password, account.password, function(err, res) {
-							if (res) {
-								callback(null, data);
-							} else {
-								callback(true, "Wrong password!");
-							}
-						});
-						
-						// Regardless if that password was correct or not, return since we've found the user
-						return;
-
-					}
-				}
-
-				callback(true, "That user cannot be found.");
-
-			}],
-			function(err, results) {
-				if (err) {
-					socket.emit('CLIENT UPDATE LOGIN FAILED', results[0]);
+		var accounts = jsonDB.accounts;
+		asyncLoop(accounts,
+			function(item, next) {
+				if (item.username == data.username) {
+					bcrypt.compare(data.password, item.password, function(err, res) {
+						if (res) {
+							socket.emit('CLIENT UPDATE LOGIN SUCCESS', data);
+						} else {
+							socket.emit('CLIENT UPDATE LOGIN FAILED', "Wrong password!");
+						}
+					});
 					return;
 				}
-				socket.emit('CLIENT UPDATE LOGIN SUCCESS', results[0]);
-				return;
-		});
-		
-
-				
-
-		
-
+				next();
+			}, function() {
+				socket.emit('CLIENT UPDATE LOGIN FAILED', "That user cannot be found.");
+			}
+		);
 	});
-
 }
 
 function addDashboardSocketEventsToSocket(socket) {
-
 	socket.on('SERVER REQUEST VIEW ROOMS', function(data) {
 		socket.emit('CLIENT UPDATE VIEW ROOMS DATA', createdRooms);
 	});
-
 	socket.on('SERVER REQUEST CREATE ROOM', function(data) {
-		async.series([
-			function(callback) {
-
-				// Check all rooms for name errors
-				for (var i in createdRooms) {
-					if (data == createdRooms[i]) {
-						callback(true, null);
-						return;
-					}
-				}
-
-				callback(null, data);
-
-			}],
-			function(err, results) {
-				if (err) {
+		var array = createdRooms;
+		asyncLoop(array,
+			function(item, next) {
+				if (data == item) {
 					socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
 					return;
 				}
-
+				next();
+			}, function() {
 				// Add the created room name to the array of created rooms
-				createdRooms.push(results[0]);
+				createdRooms.push(data);
 
 				// Initialize the array of arrays
 				// line_history['room name'] => []
 				line_history[data] = [];
 
 				// Tell the client it was a success
-				socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', results[0]);
-
-		});
+				socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', data);
+			}
+		);
 	});
-
 }

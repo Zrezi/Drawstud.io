@@ -39,20 +39,11 @@ io.on('connection', function (socket) {
 	numberOfConnections++;
 	socket.emit('CLIENT INITIAL CONNECT');
 	socket.emit('CLIENT UPDATE CONNECTED USERS AMOUNT', numberOfConnections);
-	socket.room = null;
 	socket.on('SERVER INITIAL CONNECT', function(data) {
-		if (data == "draw") {
-			addDrawingSocketEventsToSocket(socket);
-		}
-		if (data == "newAccount") {
-			addNewAccountSocketEventsToSocket(socket);
-		}
-		if (data == "login") {
-			addLoginSocketEventsToSocket(socket);
-		}
-		if (data == "dashboard") {
-			addDashboardSocketEventsToSocket(socket);
-		}
+		if (data == "draw") addDrawingSocketEventsToSocket(socket);
+		if (data == "newAccount") addNewAccountSocketEventsToSocket(socket);
+		if (data == "login") addLoginSocketEventsToSocket(socket);
+		if (data == "dashboard") addDashboardSocketEventsToSocket(socket);
 	});
 	socket.on('disconnect', function() {
 		numberOfConnections--;
@@ -149,14 +140,8 @@ function addDashboardSocketEventsToSocket(socket) {
 				}
 				next();
 			}, function() {
-				// Add the created room name to the array of created rooms
 				createdRooms.push(data);
-
-				// Initialize the array of arrays
-				// line_history['room name'] => []
 				line_history[data] = [];
-
-				// Tell the client it was a success
 				socket.emit('CLIENT UPDATE CREATE ROOM SUCCESS', data);
 			}
 		);

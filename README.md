@@ -1,4 +1,4 @@
-# Drawstud.io
+# Drawstud.io v1.1
 
 A Node.js collaborative drawing application.
 
@@ -24,18 +24,12 @@ Run `chmod +x run.sh` in a terminal and double click on `run.sh`, or alternative
 nodejs server.js
 ```
 
-# Up Next
-* Add multi-color drawing
-* Add different line widths
-* Add shapes
-* Start using Git branches!
-
-#### Known Issues
-* Rewrite server backend using [Async](https://www.npmjs.com/package/async)
-  * Will remove those nasty for loops in the server code
-
 # Version History
 
+* Version 1.1 -- Commit 34
+  * Rewrite server in Async
+    * Used [Async](https://www.npmjs.com/package/async) and [Async-Loop](https://www.npmjs.com/package/node-async-loop)
+  * Multi-color drawing
 * Version 1.0 -- Commit 27
   * User accounts
     * [BCrypt](https://www.npmjs.com/package/bcrypt-nodejs) encryption of passwords

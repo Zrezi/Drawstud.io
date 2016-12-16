@@ -46,30 +46,35 @@
 			}
 			#cursorParent {
 				position: relative;
-				height: 60vh;
+				height: 65vh;
 				background-color: white;
 			}
-			.btn {
+			.btn-canvas {
 				height: 10vh;
 			}
 			#buttons {
 				color: black;
 			}
 			#toast-container {
-			  top: 10%;
-			  right: 10%;
-			  bottom: auto !important;
-			  left: auto !important;
+				top: 10%;
+				right: 10%;
+				bottom: auto !important;
+				left: auto !important;
 			}
 			.nav-item {
 				color: black;
 			}
 			.footer {
-			text-align: center;
-			position: fixed;
-			color: #009688;
-			bottom: 0;
-			width: 100%;
+				text-align: center;
+				position: fixed;
+				color: #009688;
+				bottom: 0;
+				width: 100%;
+			}
+			.modal-content > h4 {
+				text-align: center;
+				color: #4db6ac;
+				margin-bottom: 40px;
 			}
 		</style>
 
@@ -97,8 +102,11 @@
 			<!-- CLEAR BUTTON -->
 			<div class="container">
 				<div class="row" style="text-align: center">
-					<div class="col s12">
-						<button class="btn z-depth-3 white" id="buttons" onclick="clearScreen();">Clear Screen</button>
+					<div class="col s6">
+						<button class="btn btn-canvas z-depth-3 white" id="buttons" onclick="clearScreen();">Clear Screen</button>
+					</div>
+					<div class="col s6">
+						<button class="btn disabled btn-canvas z-depth-3 white" id="buttons" onclick="$('#modal-lineStyle').modal('open');">Line Style</button>
 					</div>
 				</div>
 			</div>
@@ -108,6 +116,17 @@
 		<!-- STANDARD FOOTER -->
 		<div class="footer">
 			<p>Created by Zach Reznicek &copy; 2016 Currently <span id="onlinePeople">some</span> people online now. View the <a href="https://github.com/Zrezi/Drawstud.io">Github page here.</a></p>
+		</div>
+
+		<!-- LINE STYLE MODAL -->
+		<div id="modal-lineStyle" class="modal">
+			<div class="modal-content">
+				<h4>Line Style</h4>
+				<p>color, line width</p>
+			</div>
+			<div class="modal-footer">
+				<a class="modal-action modal-close btn-flat">Return</a>
+			</div>
 		</div>
 
 	</body>

@@ -13,7 +13,7 @@ var io = socketIo.listen(server);
 server.listen(5007);
 
 app.use(express.static(__dirname + '/public'));
-console.log("Server running on 127.0.0.1:5007");
+console.log('Server running on 127.0.0.1:5007');
 
 // The number of active connections to the server from any page
 var numberOfConnections = 0;
@@ -40,10 +40,10 @@ io.on('connection', function (socket) {
 	socket.emit('CLIENT INITIAL CONNECT');
 	socket.emit('CLIENT UPDATE CONNECTED USERS AMOUNT', numberOfConnections);
 	socket.on('SERVER INITIAL CONNECT', function(data) {
-		if (data == "draw") addDrawingSocketEventsToSocket(socket);
-		if (data == "newAccount") addNewAccountSocketEventsToSocket(socket);
-		if (data == "login") addLoginSocketEventsToSocket(socket);
-		if (data == "dashboard") addDashboardSocketEventsToSocket(socket);
+		if (data == 'draw') addDrawingSocketEventsToSocket(socket);
+		if (data == 'newAccount') addNewAccountSocketEventsToSocket(socket);
+		if (data == 'login') addLoginSocketEventsToSocket(socket);
+		if (data == 'dashboard') addDashboardSocketEventsToSocket(socket);
 	});
 	socket.on('disconnect', function() {
 		numberOfConnections--;
@@ -82,7 +82,7 @@ function addNewAccountSocketEventsToSocket(socket) {
 		asyncLoop(accounts,
 			function(item, next) {
 				if (item.username == data.username) {
-					socket.emit('CLIENT UPDATE NEW ACCOUNT FAILED', "Username is already taken!");
+					socket.emit('CLIENT UPDATE NEW ACCOUNT FAILED', 'Username is already taken!');
 					return;
 				}
 				next();
@@ -92,7 +92,10 @@ function addNewAccountSocketEventsToSocket(socket) {
 				    // write new account to json database
 					jsonDB.accounts.push({username: data.username, password: hash});
 					jsonfile.writeFile(file, jsonDB, function (err) {
-						/*if (err != null) console.error(err);*/
+						if (err != null) {
+							console.log('Error Writing New Account to Database: ' + err);
+							socket.emit('CLIENT UPDATE NEW ACCOUNT FAILED', 'Server Database Error!');
+						}
 					});
 					// tell the client that their account was created
 					socket.emit('CLIENT UPDATE NEW ACCOUNT SUCCESS');
@@ -113,14 +116,14 @@ function addLoginSocketEventsToSocket(socket) {
 						if (res) {
 							socket.emit('CLIENT UPDATE LOGIN SUCCESS', data);
 						} else {
-							socket.emit('CLIENT UPDATE LOGIN FAILED', "Wrong password!");
+							socket.emit('CLIENT UPDATE LOGIN FAILED', 'Wrong password!');
 						}
 					});
 					return;
 				}
 				next();
 			}, function() {
-				socket.emit('CLIENT UPDATE LOGIN FAILED', "That user cannot be found.");
+				socket.emit('CLIENT UPDATE LOGIN FAILED', 'That user cannot be found.');
 			}
 		);
 	});
@@ -135,7 +138,7 @@ function addDashboardSocketEventsToSocket(socket) {
 		asyncLoop(array,
 			function(item, next) {
 				if (data == item) {
-					socket.emit('CLIENT UPDATE CREATE ROOM FAILED');
+					socket.emit('CLIENT UPDATE CREATE ROOM FAILED', 'That room already exists!');
 					return;
 				}
 				next();

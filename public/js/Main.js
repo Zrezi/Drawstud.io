@@ -29,6 +29,9 @@ $(document).ready(function() {
     // Init the display object
     Display.init();
 
+    // Initialize modals on screen
+    $('.modal').modal();
+
     // Add all of the listeners
     document.addEventListener('keydown', keyPressed, true);
     document.addEventListener('keyup', keyReleased, true);
@@ -79,6 +82,17 @@ function start() {
             Materialize.toast("Color changed to blue.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
         }
 
+        if (blockOnPress("o")) {
+            lineColor = "orange";
+            Display.context.strokeStyle = lineColor;
+            Materialize.toast("Color changed to orange.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
+        }
+
+        if (blockOnPress("p")) {
+            lineColor = "purple";
+            Display.context.strokeStyle = lineColor;
+            Materialize.toast("Color changed to purple.", MATERIALIZE_TOAST_COLOR_CHANGE_TIME);
+        }
 
         if (Input.mouse.buttonsPressed["left button"] && Input.mouse.isMoving) {
 

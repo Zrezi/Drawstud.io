@@ -1,16 +1,12 @@
 {
     "accounts": [
         {
-            "username": "Zach",
-            "password": "$2a$10$RfHJjXFNWmWlA98oTqfsNekyvRM8KhN4ktpIwbBuJVyYwQq0v7loC"
-        },
-        {
-            "username": "Test",
-            "password": "$2a$10$vGDXekzdr8oEbpvNMbolhu4wX4wl6R/w6cha6ZnmJyeRDJn5WAECq"
-        },
-        {
             "username": "R",
             "password": "$2a$10$ghvqQsDKOMLlJ1IokVyUx.r2i0zOUQAd1LEKu87t2aie4xPRw6gwu"
+        },
+        {
+            "username": "q",
+            "password": "$2a$10$qHknX9THFne577rkrUjoP.zZSLFOIeQlCimuBO.ABAhMgUWLeKy6a"
         }
     ]
 }
